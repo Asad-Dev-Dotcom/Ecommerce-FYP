@@ -3,6 +3,7 @@ import Signup from "../Pages/SignUp";
 import Login from "../Pages/Login";
 import NotFound from "../Pages/Not_Found";
 import Contact from "../Pages/Contact";
+import About from "../Pages/About";
 
 
 export default function AppRoutes()
@@ -13,9 +14,7 @@ export default function AppRoutes()
       <Route path="/login" element={<Login />} />
       <Route path="/NotFound" element={<NotFound />} />
       <Route path="/contact" element={<Contact/>} />
-
-
-
-    </Routes>
+      <Route path="/About" element={<About/>} />
+  </Routes>
   );
 }

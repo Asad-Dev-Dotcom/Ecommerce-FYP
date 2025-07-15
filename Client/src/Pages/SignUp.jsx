@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function Signup() {
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-white">
+    <div className="min-h-screen flex flex-col md:flex-row bg-white mt-10">
       {/* Left Image Section (Hidden on small screens) */}
       <div className="hidden md:flex md:w-1/2 min-h-screen border-r border-gray-100 items-start justify-start">
         <img
