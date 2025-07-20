@@ -2,14 +2,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
 import { FaTruckFast } from "react-icons/fa6";
-import {
-  FaStore,
-  FaDollarSign,
-  FaGift,
-  FaMoneyBillWave,
-} from "react-icons/fa";
+import
+  {
+    FaStore,
+    FaDollarSign,
+    FaGift,
+    FaMoneyBillWave,
+  } from "react-icons/fa";
 
-export default function About() {
+export default function About()
+{
   return (
     <div className="min-h-screen bg-white px-4 sm:px-6 md:px-35 py-10">
       {/* Breadcrumb */}
