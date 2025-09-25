@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BannerWithTimer = () => {
+  const navigate = useNavigate();
+
   const [timeLeft, setTimeLeft] = useState({
     days: 5,
     hours: 23,
@@ -36,7 +39,7 @@ const BannerWithTimer = () => {
   }, []);
 
   return (
- <div className="flex flex-col md:flex-row items-center justify-between bg-black overflow-hidden shadow-lg px-4 sm:px-10 md:px-12 py-8 sm:py-10 md:py-1 mt-10 max-h-[600px]">
+    <div className="flex flex-col md:flex-row items-center justify-between bg-black overflow-hidden shadow-lg px-4 sm:px-10 md:px-12 py-8 sm:py-10 md:py-1 mt-10 max-h-[600px]">
       
       {/* LEFT SECTION */}
       <div className="flex flex-col items-start text-left gap-4 max-w-xl pl-10">
@@ -63,26 +66,25 @@ const BannerWithTimer = () => {
         </div>
 
         {/* BUTTON */}
-        <button className="mt-5 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-sm transition-all duration-200 cursor-pointer">
+        <button
+          onClick={() => navigate("/products/Speakers")}
+          className="mt-5 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-medium rounded-sm transition-all duration-200 cursor-pointer"
+        >
           Buy Now
         </button>
       </div>
 
       {/* RIGHT IMAGE */}
       <div className="w-full md:w-1/2 mt-10 md:mt-0 flex justify-center relative">
-  {/* White Glow Behind Image */}
-  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-                  w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] 
-                  bg-gray-400 rounded-full blur-3xl opacity-50 z-0" />
-
-  {/* Image */}
-  <img
-    src="/Public/Banner_pic.png"
-    alt="Music"
-    className="rounded-lg h-[380px] sm:h-[500px] w-auto object-cover relative z-10"
-  />
-</div>
-
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+                        w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] 
+                        bg-gray-400 rounded-full blur-3xl opacity-50 z-0" />
+        <img
+          src="/Public/Banner_pic.png"
+          alt="Music"
+          className="rounded-lg h-[380px] sm:h-[500px] w-auto object-cover relative z-10"
+        />
+      </div>
     </div>
   );
 };

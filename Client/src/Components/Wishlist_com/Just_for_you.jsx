@@ -83,7 +83,7 @@ const Just_for_you = () => {
         <div className="relative inline-block group cursor-pointer">
           <div className="absolute top-0 left-0 h-full bg-red-500 rounded-sm transition-all duration-500 w-3 group-hover:w-full z-0"></div>
           <h3 className="relative z-10 px-6 text-2xl py-1 text-red-500 font-semibold transition-colors duration-500 group-hover:text-white">
-            Just For You ({products.length})
+            Just For You
           </h3>
         </div>
 

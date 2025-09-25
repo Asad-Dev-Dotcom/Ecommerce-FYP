@@ -9,9 +9,10 @@ import Our_products from "../Components/OurProducts/Our_products";
 import Featured from "../Components/Featured/Featured";
 import Others from "../Components/Others/Others";
 
-const Home = () => {
+const Home = () =>
+{
   return (
-    <div className="flex flex-col items-center w-full border-4 border-green-500">
+    <div className="flex flex-col items-center w-full ">
       {/* Top Row: Sidebar + Slider */}
       <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 w-full ">
         {/* Sidebar */}
@@ -30,22 +31,22 @@ const Home = () => {
         <FlashSlider />
       </div>
       <div className=" sm:w-[85%] w-full mt-10">
-        <CategoryGrid/>
+        <CategoryGrid />
       </div>
       <div className=" sm:w-[85%] w-full mt-7">
-        <BestSelling/>
+        <BestSelling />
       </div>
       <div className=" sm:w-[85%] w-full mt-10">
-        <BannerWithTimer/>
+        <BannerWithTimer />
       </div>
       <div className=" sm:w-[85%] w-full mt-10">
-        <Our_products/>
+        <Our_products />
       </div>
-        <div className=" sm:w-[85%] w-full mt-10">
-        <Featured/>
+      <div className=" sm:w-[85%] w-full mt-10">
+        <Featured />
       </div>
-       <div className=" sm:w-[85%] w-full mt-1">
-        <Others/>
+      <div className=" sm:w-[85%] w-full mt-1">
+        <Others />
       </div>
     </div>
   );

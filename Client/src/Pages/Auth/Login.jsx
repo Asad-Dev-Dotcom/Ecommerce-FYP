@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
-
-export default function Login()
+import { useState } from "react";
+import { LuEye } from "react-icons/lu";
+import { IoEyeOffOutline } from "react-icons/io5";
+function Login()
 {
+      const [showPassword, setShowPassword] = useState(false);
+
     return (
         <div className="min-h-screen flex flex-col md:flex-row bg-white mt-10">
             {/* Left Image Section (Hidden on small screens) */}
@@ -45,6 +49,12 @@ export default function Login()
                                 placeholder="Password"
                                 className="text-md font-quicksand font-medium w-full border-b-2 border-gray-300 py-2 focus:outline-none focus:border-b-transparent peer"
                             />
+                            <div
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-2 top-2 cursor-pointer text-gray-500 "
+                                          >
+                                            {showPassword ? <LuEye size={23} /> : <IoEyeOffOutline size={23} />}
+                                          </div>
                             <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all duration-300"></div>
                         </div>
                     </div>
@@ -84,3 +94,4 @@ export default function Login()
         </div>
     );
 }
+export default Login;
