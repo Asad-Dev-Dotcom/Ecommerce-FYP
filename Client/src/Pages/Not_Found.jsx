@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-
-export default function NotFound()
+function NotFound()
 {
   return (
 
@@ -19,3 +18,4 @@ export default function NotFound()
     </div>
   );
 }
+export default NotFound;

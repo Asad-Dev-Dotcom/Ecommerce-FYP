@@ -3,7 +3,8 @@ import { MdOutlineEmail } from "react-icons/md";
 import { BsTelephone } from "react-icons/bs";
 import { Link } from "react-router-dom";
 
-export default function Contact() {
+function Contact()
+{
   return (
     <div className="min-h-screen bg-white px-4 sm:px-6 md:px-35 py-10 ">
       {/* Breadcrumb */}
@@ -94,3 +95,4 @@ export default function Contact() {
     </div>
   );
 }
+export default Contact;

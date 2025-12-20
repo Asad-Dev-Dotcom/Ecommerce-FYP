@@ -127,7 +127,7 @@ const Slider = () =>
 
                         {slide.showButton ? (
                             <button
-                                onClick={() => navigate("/products")}
+                                onClick={() => navigate("/products/our-products")}
                                 className="group mt-4 flex items-center gap-2 text-sm sm:text-base font-medium border-b-2 border-transparent hover:border-black transition-all duration-300 bg-transparent hover:bg-white text-white hover:text-black cursor-pointer p-3 rounded-lg"
                             >
                                 Shop Now

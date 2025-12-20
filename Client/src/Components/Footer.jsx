@@ -44,7 +44,7 @@ function Footer()
                     <h3 className="text-lg font-semibold mb-6">Account</h3>
                     <ul className="text-sm">
                         <li className="mb-4">
-                            <Link to="/my-account" className="relative inline-block group">
+                            <Link to="/dashboard" className="relative inline-block group">
                                 My Account
                                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full"></span>
                             </Link>
@@ -68,7 +68,7 @@ function Footer()
                             </Link>
                         </li>
                         <li className="mb-4">
-                            <Link to="/shop" className="relative inline-block group">
+                            <Link to="/products/our-products" className="relative inline-block group">
                                 Shop
                                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-white transition-all duration-500 ease-in-out group-hover:w-full"></span>
                             </Link>

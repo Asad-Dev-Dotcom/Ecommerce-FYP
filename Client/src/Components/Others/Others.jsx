@@ -38,7 +38,7 @@ const features = [
 
 const Others = () => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 my-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 = mb-20">
       {features.map((feature, index) => (
         <div
           key={index}

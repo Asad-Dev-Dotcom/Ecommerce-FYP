@@ -1,74 +1,120 @@
-import React, { useRef } from "react";
-import { LuMoveRight, LuMoveLeft } from "react-icons/lu";
-import { AiOutlineHeart } from "react-icons/ai";
+import React from "react";
+import { useDispatch } from "react-redux";
+import { setProducts } from "../../Features/Products/productsSlice"; // ✅ import
+import ProductCard from "../ProductCard/Product_card";
 
 const Our_products = () => {
-  const products = [
-    {
-      id: 1,
-      image: "/Public/apple-iphone-14-pro-max-z357i (1).jpg",
-      title: "iPhone 14 Pro Max",
-      price: 1099,
-      originalPrice: 1299,
-      rating: 4.7,
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1717354585346-c35eb01a1032",
-      title: "Samsung Galaxy S22",
-      price: 899,
-      originalPrice: 999,
-      rating: 4.4,
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1585386959984-a4155227c8c2",
-      title: "Sony WH-1000XM5",
-      price: 299,
-      originalPrice: 399,
-      rating: 4.8,
-    },
-    {
-      id: 4,
-      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
-      title: "MacBook Pro M2",
-      price: 1999,
-      originalPrice: 2299,
-      rating: 4.9,
-    },
-    {
-      id: 5,
-      image: "https://images.unsplash.com/photo-1606813909353-2f3c61d29314",
-      title: "Apple Watch Ultra",
-      price: 699,
-      originalPrice: 799,
-      rating: 4.6,
-    },
-    {
-      id: 6,
-      image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
-      title: "JBL Speaker",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.3,
-    },
-    {
-      id: 7,
-      image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
-      title: "JBL Speaker",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.3,
-    },
-{
-      id: 8,
-      image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
-      title: "JBL Speaker",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.3,
-    },
-  ];
+  const dispatch = useDispatch();
+
+const products = [
+  {
+    id: 221,
+    image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
+    title: "Bose QuietComfort 35 II",
+    price: 299,
+    originalPrice: 349,
+    rating: 4.7,
+    category: "Headphones",
+    description: "Bose QuietComfort 35 II offers excellent sound quality and noise cancellation, perfect for travelers.",
+  },
+  {
+    id: 222,
+    image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
+    title: "Sony MDR-XB950B1",
+    price: 179,
+    originalPrice: 249,
+    rating: 4.5,
+    category: "Headphones",
+    description: "Sony MDR-XB950B1 provides deep bass and comfortable design, making it ideal for music lovers.",
+  },
+  {
+    id: 223,
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
+    title: "Acer Predator Helios 300",
+    price: 1599,
+    originalPrice: 1799,
+    rating: 4.7,
+    category: "Computers",
+    description: "Acer Predator Helios 300 is a gaming laptop with fast refresh rates, perfect for gamers.",
+  },
+  {
+    id: 224,
+    image: "https://images.unsplash.com/photo-1717354585346-c35eb01a1032",
+    title: "Samsung Galaxy Z Flip 3",
+    price: 999,
+    originalPrice: 1099,
+    rating: 4.6,
+    category: "Mobiles",
+    description: "Samsung Galaxy Z Flip 3 features a foldable design with a compact form factor and advanced camera system.",
+  },
+  {
+    id: 225,
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
+    title: "Microsoft Surface Laptop 4",
+    price: 1399,
+    originalPrice: 1599,
+    rating: 4.8,
+    category: "Computers",
+    description: "Microsoft Surface Laptop 4 is a sleek laptop with impressive performance and a stunning screen.",
+  },
+  {
+    id: 226,
+    image: "https://images.unsplash.com/photo-1606813909353-2f3c61d29314",
+    title: "Garmin Venu 2",
+    price: 399,
+    originalPrice: 449,
+    rating: 4.6,
+    category: "Smart Watch",
+    description: "Garmin Venu 2 offers excellent fitness tracking with a vibrant AMOLED display and long battery life.",
+  },
+  {
+    id: 227,
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
+    title: "Razer Blade 15",
+    price: 1899,
+    originalPrice: 2099,
+    rating: 4.9,
+    category: "Computers",
+    description: "Razer Blade 15 is a high-performance gaming laptop designed for smooth gaming experiences.",
+  },
+  {
+    id: 228,
+    image: "https://images.unsplash.com/photo-1717354585346-c35eb01a1032",
+    title: "OnePlus 9",
+    price: 749,
+    originalPrice: 849,
+    rating: 4.5,
+    category: "Mobiles",
+    description: "OnePlus 9 delivers excellent performance and a top-tier camera, making it a great device for mobile enthusiasts.",
+  },
+  {
+    id: 229,
+    image: "https://images.unsplash.com/photo-1606813909353-2f3c61d29314",
+    title: "Fitbit Charge 5",
+    price: 149,
+    originalPrice: 179,
+    rating: 4.4,
+    category: "Smart Watch",
+    description: "Fitbit Charge 5 is a fitness tracker with advanced health features including heart rate monitoring.",
+  },
+  {
+    id: 230,
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
+    title: "HP Envy x360",
+    price: 1099,
+    originalPrice: 1199,
+    rating: 4.5,
+    category: "Computers",
+    description: "HP Envy x360 is a convertible laptop with a solid design and impressive performance for work and play.",
+  }
+];
+
+  // ✅ View All click handler
+  const handleViewAll = () => {
+    dispatch(setProducts(products));
+    localStorage.setItem("products", JSON.stringify(products));
+    window.open("/products/our-products", "_blank"); // ✅ new tab
+  };
 
   return (
     <div className="w-full px-6 py-5">
@@ -89,66 +135,19 @@ const Our_products = () => {
         </h2>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Grid - sirf preview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-white group relative overflow-hidden cursor-pointer w-full"
-          >
-            <div className="relative w-full h-55 overflow-hidden rounded-md mt-5">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-8 h-8 bg-gray-200 group-hover:bg-black rounded-full flex items-center justify-center cursor-pointer">
-                  <AiOutlineHeart className="text-gray-700 group-hover:text-white" size={18} />
-                </div>
-              </div>
-              <div className="absolute bottom-[-100%] left-0 w-full transition-all duration-300 group-hover:bottom-0">
-                <button className="w-full py-2 text-sm font-medium bg-white text-black group-hover:bg-black group-hover:text-white hover:bg-white hover:text-black cursor-pointer">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-
-            <h3 className="mt-3 text-sm font-semibold text-gray-700 px-2 truncate">
-              {product.title}
-            </h3>
-            <div className="mt-1 flex items-center gap-2 px-2">
-              <span className="text-red-600 font-bold text-base">
-                ${product.price}
-              </span>
-              <span className="line-through text-gray-400 text-sm">
-                ${product.originalPrice}
-              </span>
-            </div>
-            <div className="mt-1 flex items-center gap-1 px-2 pb-3">
-              {Array.from({ length: 5 }, (_, i) => (
-                <span
-                  key={i}
-                  className={
-                    i < Math.round(product.rating)
-                      ? "text-yellow-500"
-                      : "text-gray-300"
-                  }
-                >
-                  ★
-                </span>
-              ))}
-              <span className="text-sm text-gray-600">
-                ({product.rating})
-              </span>
-            </div>
-          </div>
+        {products.slice(0, 8).map((product) => ( // ✅ sirf 4 dikhayenge preview me
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 
       {/* View All Button */}
       <div className="w-full flex justify-center mt-6">
-        <button className="bg-red-600 text-white px-7 py-3 rounded-sm hover:bg-red-500 transition cursor-pointer mt-5 font-quicksand font-semibold">
+        <button
+          onClick={handleViewAll}
+          className="bg-red-600 text-white px-7 py-3 rounded-sm hover:bg-red-500 transition cursor-pointer mt-5 font-quicksand font-semibold"
+        >
           View All Product
         </button>
       </div>
