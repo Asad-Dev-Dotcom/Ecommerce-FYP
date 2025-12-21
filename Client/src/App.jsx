@@ -18,6 +18,7 @@ import ProductPage from "./Pages/ProductDetails";
 import ForgotPassword from "./Pages/Forgot_password";
 import Product_list from "./Pages/Product_listing";
 import Products from "./Pages/Products";
+import Admin from "./Pages/admin/index"
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -75,6 +76,7 @@ function App()
           <Route path="/product_list" element={<Product_list />} />
           <Route path="/product_list/:category" element={<Product_list />} />
           <Route path="/*" element={<Notfound />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
 

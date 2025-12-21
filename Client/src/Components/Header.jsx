@@ -8,7 +8,8 @@ import { SlLogout } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-function Header() {
+function Header()
+{
   const location = useLocation();
   const isUserNavigated = location.key !== "default";
 
@@ -18,6 +19,8 @@ function Header() {
 
   const [query, setQuery] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
+
+  const user = useSelector((state) => state.auth.user);
 
   const navLink = (path, label) => (
     <Link
@@ -36,11 +39,13 @@ function Header() {
   );
 
   // Search input handler
-  const handleSearch = (e) => {
+  const handleSearch = (e) =>
+  {
     const value = e.target.value;
     setQuery(value);
 
-    if (!value.trim()) {
+    if (!value.trim())
+    {
       setFilteredProducts([]);
       return;
     }
@@ -95,7 +100,8 @@ function Header() {
                     key={item.id}
                     to={`/product/${item.id}`}
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                    onClick={() => {
+                    onClick={() =>
+                    {
                       setQuery("");
                       setFilteredProducts([]);
                     }}
@@ -142,9 +148,11 @@ function Header() {
             </button>
             <div className="opacity-0 invisible group-hover:visible group-hover:opacity-100 
               absolute right-0 mt-2 w-48 bg-black/55 backdrop-blur-md rounded-md transition-all duration-300 z-50">
-              <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+              {user?.role === "admin" ? (<Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+                <FaRegUser className="text-lg" /> Admin Dashboard
+              </Link>) : <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
                 <FaRegUser className="text-lg" /> Manage my account
-              </Link>
+              </Link>}
               <Link to="/orders" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
                 <FiShoppingBag className="text-lg" /> My orders
               </Link>

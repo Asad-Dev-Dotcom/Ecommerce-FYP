@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { IoEyeOffOutline } from "react-icons/io5";
+import { useLoginMutation } from "../../redux/apis/authApis"
 
-function Login() {
+function Login()
+{
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -13,30 +15,40 @@ function Login() {
 
   const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
+  const [login, { isLoading }] = useLoginMutation()
+
+  const handleChange = (e) =>
+  {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
   // Professional Validation
-  const validate = () => {
+  const validate = () =>
+  {
     let newErrors = {};
 
     // Email validation
-    if (!formData.email.trim()) {
+    if (!formData.email.trim())
+    {
       newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
+    {
       newErrors.email = "Please enter a valid email address";
     }
 
     // Password validation
-    if (!formData.password) {
+    if (!formData.password)
+    {
       newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
+    } else if (formData.password.length < 8)
+    {
       newErrors.password = "Password must be at least 8 characters";
-    } else if (!/[0-9]/.test(formData.password)) {
+    } else if (!/[0-9]/.test(formData.password))
+    {
       newErrors.password = "Password must contain at least one number";
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password))
+    {
       newErrors.password = "Password must contain at least one special character";
     }
 
@@ -44,11 +56,16 @@ function Login() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) =>
+  {
     e.preventDefault();
-    if (validate()) {
-      console.log("Login form is valid:", formData);
-      // yahan backend API call
+    if (validate())
+    {
+      const response = await login(formData).unwrap()
+      toast.success(response.message || "Login Successfull")
+    } else
+    {
+      toast.error(response.message || "Login Failed")
     }
   };
 
