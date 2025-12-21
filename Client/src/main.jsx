@@ -6,7 +6,7 @@ import App from './App.jsx';
 
 // Redux
 import { Provider } from 'react-redux';
-import { store } from './App/Store.js'; // ✅ folder name small "app"
+import { store } from './redux/store.js';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

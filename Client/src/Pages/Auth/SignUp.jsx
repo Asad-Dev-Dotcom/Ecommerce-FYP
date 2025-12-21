@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { IoEyeOffOutline } from "react-icons/io5";
+import { useSignupMutation } from "../../redux/apis/authApis";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-function Signup() {
+function Signup()
+{
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -14,49 +18,54 @@ function Signup() {
 
   const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
+  // RTK Query Mutation Hook
+  const [signup, { isLoading }] = useSignupMutation();
+
+  const handleChange = (e) =>
+  {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  // Professional Validation
-  const validate = () => {
+  const validate = () =>
+  {
     let newErrors = {};
 
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    } else if (formData.name.trim().length < 4) {
+    if (!formData.name.trim()) newErrors.name = "Name is required";
+    else if (formData.name.trim().length < 4)
       newErrors.name = "Name must be at least 4 characters";
-    }
 
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Please enter a valid email address";
-    }
 
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
-    } else if (!/[0-9]/.test(formData.password)) {
+    else if (!/[0-9]/.test(formData.password))
       newErrors.password = "Password must contain at least one number";
-    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+    else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password))
       newErrors.password = "Password must contain at least one special character";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) =>
+  {
     e.preventDefault();
-    if (validate()) {
-      console.log("Form is valid:", formData);
-      // Yahan API call ya backend integration kar sakte hain
+    if (validate())
+    {
+      try
+      {
+        const response = await signup(formData).unwrap();
+        toast.success("Signup successful! 🎉");
+        console.log("Response:", response);
+      } catch (error)
+      {
+        toast.error(error?.data?.message || "Signup failed!");
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -141,8 +150,12 @@ function Signup() {
           </div>
 
           <div className="flex flex-col pt-10 space-y-4">
-            <button className="bg-red-600 hover:bg-red-700 text-white p-3 rounded">
-              Create an Account
+            <button
+              type="submit"
+              className="bg-red-600 hover:bg-red-700 text-white p-3 rounded"
+              disabled={isLoading}
+            >
+              {isLoading ? "Creating..." : "Create an Account"}
             </button>
 
             <button className="border border-gray-300 p-3 rounded">

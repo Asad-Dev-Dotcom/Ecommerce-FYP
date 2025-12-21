@@ -2,20 +2,46 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { IoCartOutline } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
-import {  removeFromCart,
+import
+{
+  removeFromCart,
   increaseQuantity,
-  decreaseQuantity, } from "../Features/Cart/CartSlice";
+  decreaseQuantity,
+} from "../Features/Cart/CartSlice";
+import { Router } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
-function Cart() {
+
+function Cart()
+{
   // ✅ Corrected state name (cartItems instead of items)
   const cartItems = useSelector((state) => state.cart.cartItems || []);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
+
+
 
   const calculateSubtotal = () =>
     cartItems
       .reduce((total, item) => total + item.price * item.quantity, 0)
       .toFixed(2);
+
+
+  function handleOnClickProceedToCheckout()
+  {
+    if (user)
+    {
+      navigate("/checkout");
+    } else
+    {
+      toast.error("Login first!");
+      navigate("/login")
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-white px-4 sm:px-6 md:px-35 py-10">
@@ -107,12 +133,12 @@ function Cart() {
                 <span>Total</span>
                 <span>${calculateSubtotal()}</span>
               </div>
-              <Link
-                to="/checkout"
+              <button
+                onClick={handleOnClickProceedToCheckout}
                 className="w-full block bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 transition text-center mt-6"
               >
                 Proceed to Checkout
-              </Link>
+              </button>
             </div>
           </div>
         </div>
