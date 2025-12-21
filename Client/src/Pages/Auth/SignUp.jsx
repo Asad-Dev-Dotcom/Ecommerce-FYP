@@ -2,89 +2,158 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { IoEyeOffOutline } from "react-icons/io5";
-function Signup()
-{
+
+function Signup() {
   const [showPassword, setShowPassword] = useState(false);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+
+  // Professional Validation
+  const validate = () => {
+    let newErrors = {};
+
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (formData.name.trim().length < 4) {
+      newErrors.name = "Name must be at least 4 characters";
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[0-9]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one number";
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one special character";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      console.log("Form is valid:", formData);
+      // Yahan API call ya backend integration kar sakte hain
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-white mt-10">
-      {/* Left Image Section (Hidden on small screens) */}
-      <div className="hidden md:flex md:w-1/2 min-h-screen border-r border-gray-100 items-start justify-start">
+      {/* Left Image */}
+      <div className="hidden md:flex md:w-1/2 min-h-screen border-r border-gray-100">
         <img
           className="mt-10 h-[80vh] w-full object-cover object-left"
-          src="https://img.freepik.com/premium-photo/empty-black-smart-phone-with-cart-bags-light-background-online-shopping-purchase-concept-mock-up-3d-rendering_670147-10275.jpg?semt=ais_hybrid&w=740"
+          src="https://img.freepik.com/premium-photo/empty-black-smart-phone-with-cart-bags-light-background-online-shopping-purchase-concept-mock-up-3d-rendering_670147-10275.jpg"
           alt="signup"
         />
       </div>
 
-      {/* Right Form Section */}
-      <div className="w-full md:w-1/2 min-h-screen flex items-center justify-center px-4 sm:px-6 py-10">
-        <form className="w-full max-w-sm -mt-20 ">
-          {/* Heading */}
-          <div>
-            <h1 className="text-3xl sm:text-4xl font-semibold text-center md:text-left">
-              Create an account
-            </h1>
-            <p className="pt-2 text-center md:text-left text-gray-600">
-              Enter your details below
-            </p>
-          </div>
+      {/* Right Form */}
+      <div className="w-full md:w-1/2 min-h-screen flex items-center justify-center px-4 py-10">
+        <form className="w-full max-w-sm -mt-20" onSubmit={handleSubmit}>
+          <h1 className="text-4xl font-semibold">Create an account</h1>
+          <p className="pt-2 text-gray-600">Enter your details below</p>
 
-          {/* Inputs */}
-          <div className="flex flex-col pt-8 space-y-6">
-            <div className="relative w-full">
+          <div className="flex flex-col pt-8 space-y-8">
+            {/* NAME */}
+            <div className="relative">
               <input
                 type="text"
+                name="name"
                 placeholder="Name"
-                className="text-md font-quicksand font-medium w-full border-b-2 border-gray-300 py-2 focus:outline-none focus:border-b-transparent peer"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full border-b-2 border-gray-300 py-2 peer focus:outline-none focus:border-b-transparent"
               />
-              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all duration-300"></div>
+              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all"></div>
+              {errors.name && (
+                <span className="absolute -bottom-5 left-0 text-sm text-red-500">
+                  {errors.name}
+                </span>
+              )}
             </div>
 
-            <div className="relative w-full">
+            {/* EMAIL */}
+            <div className="relative">
               <input
                 type="email"
-                placeholder="Email or Phone number"
-                className="text-md font-quicksand font-medium w-full border-b-2 border-gray-300 py-2 focus:outline-none focus:border-b-transparent peer"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full border-b-2 border-gray-300 py-2 peer focus:outline-none focus:border-b-transparent"
               />
-              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all duration-300"></div>
+              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all"></div>
+              {errors.email && (
+                <span className="absolute -bottom-5 left-0 text-sm text-red-500">
+                  {errors.email}
+                </span>
+              )}
             </div>
 
-            <div className="relative w-full">
+            {/* PASSWORD */}
+            <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
+                name="password"
                 placeholder="Password"
-                className="text-md font-quicksand font-medium w-full border-b-2 border-gray-300 py-2 pr-10 focus:outline-none focus:border-b-transparent peer"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full border-b-2 border-gray-300 py-2 pr-10 peer focus:outline-none focus:border-b-transparent"
               />
               <div
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2 top-2 cursor-pointer text-gray-500 "
+                className="absolute right-2 top-2 cursor-pointer text-gray-500"
               >
-                {showPassword ? <LuEye size={23} /> : <IoEyeOffOutline size={23} />}
+                {showPassword ? <LuEye size={22} /> : <IoEyeOffOutline size={22} />}
               </div>
-              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all duration-300"></div>
+              <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-red-500 peer-focus:w-full transition-all"></div>
+              {errors.password && (
+                <span className="absolute -bottom-5 left-0 text-sm text-red-500">
+                  {errors.password}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col pt-8 space-y-4">
-            <button
-              type="submit"
-              className="bg-red-600 hover:bg-red-700 text-white text-lg p-3 rounded cursor-pointer transition-colors duration-200"
-            >
+          <div className="flex flex-col pt-10 space-y-4">
+            <button className="bg-red-600 hover:bg-red-700 text-white p-3 rounded">
               Create an Account
             </button>
 
-            <button className="border border-gray-300 text-gray-700 p-3 rounded">
+            <button className="border border-gray-300 p-3 rounded">
               Sign Up with Google
             </button>
 
-            {/* Login Text */}
-            <p className="text-gray-700 text-base text-center mt-3">
-              Already have an account?{" "}
+            <p className="text-center text-gray-700">
+              Already have an account?
               <Link
                 to="/login"
-                className="text-red-600 px-2 py-1 rounded cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-200"
+                className="text-red-600 px-2 py-1 hover:bg-red-600 hover:text-white rounded"
               >
                 Log In
               </Link>
@@ -95,4 +164,5 @@ function Signup()
     </div>
   );
 }
+
 export default Signup;
