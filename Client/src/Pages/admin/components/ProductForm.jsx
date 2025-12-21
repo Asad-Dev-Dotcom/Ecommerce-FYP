@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { categories } from '../data/dummyData';
 
-const ProductForm = ({ product, onSave, onCancel }) => {
+const ProductForm = ({ product, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -14,8 +15,10 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     variants: []
   });
 
-  useEffect(() => {
-    if (product) {
+  useEffect(() =>
+  {
+    if (product)
+    {
       setFormData({
         title: product.title || '',
         description: product.description || '',
@@ -30,7 +33,8 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }
   }, [product]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -38,7 +42,8 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }));
   };
 
-  const handleImageChange = (index, value) => {
+  const handleImageChange = (index, value) =>
+  {
     const newImages = [...formData.images];
     newImages[index] = value;
     setFormData(prev => ({
@@ -47,15 +52,18 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }));
   };
 
-  const addImageField = () => {
+  const addImageField = () =>
+  {
     setFormData(prev => ({
       ...prev,
       images: [...prev.images, '']
     }));
   };
 
-  const removeImageField = (index) => {
-    if (formData.images.length > 1) {
+  const removeImageField = (index) =>
+  {
+    if (formData.images.length > 1)
+    {
       const newImages = formData.images.filter((_, i) => i !== index);
       setFormData(prev => ({
         ...prev,
@@ -64,7 +72,8 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) =>
+  {
     e.preventDefault();
 
     const productData = {
@@ -80,10 +89,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div className="fixed inset-0  bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-900 m-0">{product ? 'Edit Product' : 'Add New Product'}</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 m-0">
+            {product ? 'Edit Product' : 'Add New Product'}
+          </h2>
           <button
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none focus:outline-none"
             onClick={onCancel}
@@ -93,6 +104,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
+          {/* Product Title */}
           <div>
             <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
               Product Title *
@@ -103,11 +115,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="input-field"
+              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
 
+          {/* Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
               Description *
@@ -118,11 +131,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="input-field resize-vertical"
+              className="w-full p-2 border border-black text-black rounded resize-vertical outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
 
+          {/* Price & Discount */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
@@ -136,11 +150,10 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 onChange={handleChange}
                 step="0.01"
                 min="0"
-                className="input-field"
+                className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
                 required
               />
             </div>
-
             <div>
               <label htmlFor="discountPrice" className="block text-sm font-medium text-gray-700 mb-2">
                 Discount Price
@@ -153,11 +166,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 onChange={handleChange}
                 step="0.01"
                 min="0"
-                className="input-field"
+                className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
               />
             </div>
           </div>
 
+          {/* Category & SKU */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
@@ -168,7 +182,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="input-field"
+                className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
                 required
               >
                 <option value="">Select Category</option>
@@ -177,7 +191,6 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 ))}
               </select>
             </div>
-
             <div>
               <label htmlFor="sku" className="block text-sm font-medium text-gray-700 mb-2">
                 SKU *
@@ -188,12 +201,13 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="input-field"
+                className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
                 required
               />
             </div>
           </div>
 
+          {/* Stock */}
           <div>
             <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-2">
               Stock Quantity *
@@ -205,11 +219,12 @@ const ProductForm = ({ product, onSave, onCancel }) => {
               value={formData.stock}
               onChange={handleChange}
               min="0"
-              className="input-field"
+              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
 
+          {/* Product Images */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Product Images *
@@ -221,13 +236,13 @@ const ProductForm = ({ product, onSave, onCancel }) => {
                   placeholder="Image URL"
                   value={image}
                   onChange={(e) => handleImageChange(index, e.target.value)}
-                  className="input-field flex-1"
+                  className="flex-1 p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
                   required={index === 0}
                 />
                 {formData.images.length > 1 && (
                   <button
                     type="button"
-                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200"
+                    className="bg-black text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-800"
                     onClick={() => removeImageField(index)}
                   >
                     Remove
@@ -237,24 +252,25 @@ const ProductForm = ({ product, onSave, onCancel }) => {
             ))}
             <button
               type="button"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 mt-2"
+              className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 mt-2 hover:bg-gray-800"
               onClick={addImageField}
             >
               + Add Another Image
             </button>
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-5 border-t border-gray-200">
             <button
               type="button"
-              className="btn-secondary"
+              className="bg-black text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800"
               onClick={onCancel}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700"
             >
               {product ? 'Update Product' : 'Add Product'}
             </button>

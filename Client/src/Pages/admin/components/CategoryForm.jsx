@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
-const CategoryForm = ({ category, onSave, onCancel }) => {
+const CategoryForm = ({ category, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     image: ''
   });
 
-  useEffect(() => {
-    if (category) {
+  useEffect(() =>
+  {
+    if (category)
+    {
       setFormData({
         name: category.name || '',
         description: category.description || '',
@@ -17,7 +20,8 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     }
   }, [category]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -25,7 +29,8 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) =>
+  {
     e.preventDefault();
 
     const categoryData = {
@@ -40,7 +45,9 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-900 m-0">{category ? 'Edit Category' : 'Add New Category'}</h2>
+          <h2 className="text-2xl font-semibold text-gray-900 m-0">
+            {category ? 'Edit Category' : 'Add New Category'}
+          </h2>
           <button
             className="text-gray-400 hover:text-gray-600 text-2xl leading-none focus:outline-none"
             onClick={onCancel}
@@ -60,7 +67,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="input-field"
+              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
@@ -75,7 +82,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="input-field resize-vertical"
+              className="w-full p-2 border border-black text-black rounded resize-vertical outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
@@ -91,7 +98,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               value={formData.image}
               onChange={handleChange}
               placeholder="https://example.com/image.jpg"
-              className="input-field"
+              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
               required
             />
           </div>
@@ -109,14 +116,14 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
-              className="btn-secondary"
+              className="bg-black text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800"
               onClick={onCancel}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="btn-primary"
+              className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700"
             >
               {category ? 'Update Category' : 'Add Category'}
             </button>

@@ -1,6 +1,7 @@
 import React from 'react';
 
-const CategoryCard = ({ category, onEdit, onDelete }) => {
+const CategoryCard = ({ category, onEdit, onDelete }) =>
+{
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200">
       <div className="h-32 overflow-hidden">
@@ -28,7 +29,7 @@ const CategoryCard = ({ category, onEdit, onDelete }) => {
 
         <div className="flex gap-2">
           <button
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+            className="flex-1 bg-black hover:bg-gray-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
             onClick={() => onEdit(category)}
           >
             Edit

@@ -1,8 +1,11 @@
 import React from 'react';
 
-const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
+const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) =>
+{
+  const getStatusColor = (status) =>
+  {
+    switch (status)
+    {
       case 'delivered':
         return 'bg-green-500';
       case 'shipped':
@@ -16,7 +19,8 @@ const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) => {
     }
   };
 
-  const handleStatusChange = (e) => {
+  const handleStatusChange = (e) =>
+  {
     onStatusChange(order.id, e.target.value);
   };
 
@@ -67,7 +71,7 @@ const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) => {
 
       <div className="text-center">
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
           onClick={() => onViewDetails(order)}
         >
           View Details

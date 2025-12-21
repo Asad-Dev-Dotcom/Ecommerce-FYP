@@ -3,36 +3,44 @@ import { categories } from '../data/dummyData';
 import CategoryCard from '../components/CategoryCard';
 import CategoryForm from '../components/CategoryForm';
 
-const Categories = () => {
+const Categories = () =>
+{
   const [categoryList, setCategoryList] = useState(categories);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
 
-  const handleAddCategory = () => {
+  const handleAddCategory = () =>
+  {
     setEditingCategory(null);
     setShowForm(true);
   };
 
-  const handleEditCategory = (category) => {
+  const handleEditCategory = (category) =>
+  {
     setEditingCategory(category);
     setShowForm(true);
   };
 
-  const handleDeleteCategory = (categoryId) => {
-    if (window.confirm('Are you sure you want to delete this category? This action cannot be undone.')) {
+  const handleDeleteCategory = (categoryId) =>
+  {
+    if (window.confirm('Are you sure you want to delete this category? This action cannot be undone.'))
+    {
       setCategoryList(categoryList.filter(category => category.id !== categoryId));
     }
   };
 
-  const handleSaveCategory = (categoryData) => {
-    if (editingCategory) {
+  const handleSaveCategory = (categoryData) =>
+  {
+    if (editingCategory)
+    {
       // Update existing category
       setCategoryList(categoryList.map(category =>
         category.id === editingCategory.id
           ? { ...category, ...categoryData, id: category.id }
           : category
       ));
-    } else {
+    } else
+    {
       // Add new category
       const newCategory = {
         ...categoryData,
@@ -50,7 +58,7 @@ const Categories = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-4xl font-bold text-gray-900 m-0">Categories Management</h1>
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center gap-2"
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center gap-2"
           onClick={handleAddCategory}
         >
           <span>+</span>
@@ -93,7 +101,8 @@ const Categories = () => {
         <CategoryForm
           category={editingCategory}
           onSave={handleSaveCategory}
-          onCancel={() => {
+          onCancel={() =>
+          {
             setShowForm(false);
             setEditingCategory(null);
           }}

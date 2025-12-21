@@ -1,6 +1,7 @@
 import React from 'react';
 
-const ProductCard = ({ product, onEdit, onDelete }) => {
+const ProductCard = ({ product, onEdit, onDelete }) =>
+{
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md hover:-translate-y-1 transition-all duration-200">
       <div className="relative h-48 overflow-hidden">
@@ -32,18 +33,17 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
         </div>
 
         <div className="mb-4">
-          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-            product.stock <= 10
+          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${product.stock <= 10
               ? 'bg-red-100 text-red-800'
               : 'bg-green-100 text-green-800'
-          }`}>
+            }`}>
             Stock: {product.stock}
           </span>
         </div>
 
         <div className="flex gap-2">
           <button
-            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+            className="flex-1 bg-black hover:bg-gray-500 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
             onClick={() => onEdit(product)}
           >
             Edit
