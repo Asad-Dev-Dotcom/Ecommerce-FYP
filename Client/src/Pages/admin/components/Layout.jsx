@@ -5,10 +5,16 @@ import Header from './Header';
 const Layout = ({ currentPage, setCurrentPage, children }) => {
   return (
     <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar fixed */}
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
-      <div className="flex-1 flex flex-col ml-70 md:ml-70">
+
+      {/* Main content */}
+      <div className="flex-1 ml-70 flex flex-col">
+        {/* Header fixed at top of main content */}
         <Header />
-        <main className="flex-1 p-6 max-w-full">
+
+        {/* Scrollable area */}
+        <main className="flex-1 overflow-y-auto p-6">
           {children}
         </main>
       </div>

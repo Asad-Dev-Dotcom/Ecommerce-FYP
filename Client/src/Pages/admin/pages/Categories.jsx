@@ -66,7 +66,7 @@ const Categories = () =>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid rid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-200">
           <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Total Categories</h3>
           <p className="text-3xl font-bold text-gray-900 m-0">{categoryList.length}</p>

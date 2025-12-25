@@ -23,7 +23,15 @@ const Users = () => {
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="input-field"
+          className=" w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500
+            "
         />
       </div>
 

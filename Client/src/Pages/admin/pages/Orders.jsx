@@ -15,9 +15,15 @@ const Orders = () => {
   };
 
   const filteredOrders = orderList.filter(order => {
-    const matchesStatus = filterStatus === 'all' || order.status === filterStatus;
-    const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         getCustomerName(order.customerId).toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      filterStatus === 'all' || order.status === filterStatus;
+
+    const matchesSearch =
+      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      getCustomerName(order.customerId)
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+
     return matchesStatus && matchesSearch;
   });
 
@@ -27,96 +33,135 @@ const Orders = () => {
         ? {
             ...order,
             status: newStatus,
-            ...(newStatus === 'shipped' && { shippedDate: new Date().toISOString().split('T')[0] }),
-            ...(newStatus === 'delivered' && { deliveredDate: new Date().toISOString().split('T')[0] })
+            ...(newStatus === 'shipped' && {
+              shippedDate: new Date().toISOString().split('T')[0],
+            }),
+            ...(newStatus === 'delivered' && {
+              deliveredDate: new Date().toISOString().split('T')[0],
+            }),
           }
         : order
     ));
   };
 
-  const handleViewOrder = (order) => {
-    setSelectedOrder(order);
-  };
-
-  const handleCloseOrderDetails = () => {
-    setSelectedOrder(null);
-  };
-
   const statusOptions = ['all', 'pending', 'processing', 'shipped', 'delivered'];
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto px-4 py-6">
+
+      {/* Header */}
       <div className="mb-6">
-        <h1 className="text-4xl font-bold text-gray-900 m-0">Orders Management</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
+          Orders Management
+        </h1>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="flex-1 max-w-md">
+      {/* Search + Status Buttons */}
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 mb-6 items-center">
+
+        {/* Search */}
+        <div className="w-full lg:w-auto lg:mr-3">
           <input
             type="text"
             placeholder="Search by order ID or customer name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="input-field"
+            className="
+              w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500
+            "
           />
         </div>
 
-        <div className="sm:w-48">
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="input-field"
-          >
-            {statusOptions.map(status => (
-              <option key={status} value={status}>
-                {status === 'all' ? 'All Status' : status.charAt(0).toUpperCase() + status.slice(1)}
-              </option>
-            ))}
-          </select>
+        {/* Status Buttons */}
+        <div className="flex items-center gap-2 flex-wrap lg:ml-0">
+          {statusOptions.map(status => {
+            const isActive = status === filterStatus;
+
+            return (
+              <button
+                key={status}
+                onClick={() => setFilterStatus(status)}
+                className={`
+                  px-6 py-2 rounded-lg text-sm font-medium
+                  transition-colors duration-200
+                  whitespace-nowrap
+                  ${isActive
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-gray-200 text-black hover:bg-gray-300'
+                  }
+                `}
+              >
+                {status === 'all'
+                  ? 'All Status'
+                  : status.charAt(0).toUpperCase() + status.slice(1)
+                }
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Total Orders</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{orderList.length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Pending Orders</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{orderList.filter(o => o.status === 'pending').length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Processing</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{orderList.filter(o => o.status === 'processing').length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Shipped</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{orderList.filter(o => o.status === 'shipped').length}</p>
-        </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Stat title="Total Orders" value={orderList.length} />
+        <Stat
+          title="Pending Orders"
+          value={orderList.filter(o => o.status === 'pending').length}
+        />
+        <Stat
+          title="Processing"
+          value={orderList.filter(o => o.status === 'processing').length}
+        />
+        <Stat
+          title="Shipped"
+          value={orderList.filter(o => o.status === 'shipped').length}
+        />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      {/* Orders Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredOrders.map(order => (
           <OrderCard
             key={order.id}
             order={order}
             customerName={getCustomerName(order.customerId)}
             onStatusChange={handleStatusChange}
-            onViewDetails={handleViewOrder}
+            onViewDetails={() => setSelectedOrder(order)}
           />
         ))}
       </div>
 
+      {/* Order Details Modal */}
       {selectedOrder && (
         <OrderDetails
           order={selectedOrder}
-          customer={users.find(user => user.id === selectedOrder.customerId)}
-          onClose={handleCloseOrderDetails}
+          customer={users.find(
+            user => user.id === selectedOrder.customerId
+          )}
+          onClose={() => setSelectedOrder(null)}
           onStatusChange={handleStatusChange}
         />
       )}
     </div>
   );
 };
+
+const Stat = ({ title, value }) => (
+  <div className="bg-white rounded-xl p-5 text-center shadow-sm border border-gray-200">
+    <h3 className="text-xs sm:text-sm font-medium text-gray-500 uppercase mb-2">
+      {title}
+    </h3>
+    <p className="text-2xl sm:text-3xl font-bold text-gray-900 m-0">
+      {value}
+    </p>
+  </div>
+);
 
 export default Orders;

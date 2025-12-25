@@ -84,6 +84,7 @@ const ProductForm = ({ product, onSave, onCancel }) =>
       images: formData.images.filter(img => img.trim() !== ''),
       status: 'active'
     };
+    
 
     onSave(productData);
   };

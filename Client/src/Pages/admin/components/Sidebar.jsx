@@ -1,53 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { MdDashboard } from "react-icons/md";
+import { FaBoxOpen } from "react-icons/fa";
+import { MdOutlineShoppingCart } from "react-icons/md";
+import { MdOutlineCategory } from "react-icons/md";
+import { FaUsers } from "react-icons/fa6";
+import { IoMdSettings } from "react-icons/io";
+import { HiMenu, HiX } from "react-icons/hi";
 
 const Sidebar = ({ currentPage, setCurrentPage }) =>
 {
+  const [isOpen, setIsOpen] = useState(false);
+
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊' },
-    { id: 'products', label: 'Products', icon: '📦' },
-    { id: 'orders', label: 'Orders', icon: '🛒' },
-    { id: 'categories', label: 'Categories', icon: '🏷️' },
-    { id: 'users', label: 'Users', icon: '👥' },
-    { id: 'settings', label: 'Settings', icon: '⚙️' }
+    { id: 'dashboard', label: 'Dashboard', icon: <MdDashboard /> },
+    { id: 'products', label: 'Products', icon: <FaBoxOpen /> },
+    { id: 'orders', label: 'Orders', icon: <MdOutlineShoppingCart /> },
+    { id: 'categories', label: 'Categories', icon: <MdOutlineCategory /> },
+    { id: 'users', label: 'Users', icon: <FaUsers /> },
+    { id: 'settings', label: 'Settings', icon: <IoMdSettings /> }
   ];
 
   return (
-    <aside className="fixed  left-0 w-70 h-screen bg-gradient-primary text-black flex flex-col shadow-lg z-50">
-      <div className="p-5 pb-4 border-b border-black/10">
-        <h2 className="text-2xl font-semibold bg-gradient-to-r from-black to-gray-800 bg-clip-text text-transparent">
-          Admin Panel
-        </h2>
-      </div>
-
-      <nav className="flex-1 py-10">
-        <ul className="list-none m-0 p-0">
-          {menuItems.map(item => (
-            <li key={item.id} className="mb-1">
-              <button
-                className={`flex items-center w-full px-5 py-3 text-left text-black/80 hover:text-black hover:bg-black/10 hover:translate-x-1 transition-all duration-300 rounded-r-2xl mr-2 focus:outline-none ${currentPage === item.id ? 'bg-black/15 text-black shadow-lg' : ''
-                  }`}
-                onClick={() => setCurrentPage(item.id)}
-              >
-                <span className="mr-3 text-lg w-5 text-center">{item.icon}</span>
-                <span className="flex-1">{item.label}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </nav>
-
-      <div className="p-5 border-t border-black/10">
-        <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center text-lg mr-3">
-            👤
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-black m-0 mb-1">Admin User</p>
-            <p className="text-xs text-black/70 m-0">Administrator</p>
-          </div>
+    <>
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 has-[800px]: w-64 bg-gradient-to-b from-gray-100 to-gray-200 text-black flex flex-col shadow-lg z-40 transform transition-transform duration-300
+        ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
+      >
+        {/* Header */}
+        <div className="py-40 p-5 pb-4 border-b border-black/10">
+          <h2 className="text-2xl font-semibold bg-gradient-to-r from-black to-gray-800 bg-clip-text text-transparent">
+            Admin Panel
+          </h2>
         </div>
+
+        {/* Menu */}
+        <nav className="flex-1 py-10">
+          <ul className="list-none m-0 p-0">
+            {menuItems.map(item => (
+              <li key={item.id} className="mb-1">
+                <button
+                  className={`flex items-center w-full px-5 py-3 text-left text-black/80 
+    rounded-r-2xl mr-2 focus:outline-none transition-all duration-300
+    ${currentPage === item.id
+                      ? 'bg-black text-white shadow-lg'
+                      : 'hover:bg-black hover:text-white'
+                    }`}
+                  onClick={() =>
+                  {
+                    setCurrentPage(item.id);
+                    setIsOpen(false);
+                  }}
+                >
+                  <span className="mr-3 text-lg w-5 text-center">{item.icon}</span>
+                  <span className="flex-1">{item.label}</span>
+                </button>
+
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Mobile Toggle Button (float outside sidebar when closed) */}
+      <div className={`md:hidden fixed top-40 z-50 transition-all duration-300 ${isOpen ? 'left-64' : 'left-0'}`}>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="text-2xl text-black p-2 bg-white rounded-r shadow-lg"
+        >
+          {isOpen ? <HiX /> : <HiMenu />}
+        </button>
       </div>
-    </aside>
+
+      {/* Overlay for Mobile */}
+      {isOpen && <div onClick={() => setIsOpen(false)} className="fixed inset-0 bg-black/30 z-30 md:hidden"></div>}
+    </>
   );
 };
 

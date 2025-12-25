@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const CategoryForm = ({ category, onSave, onCancel }) =>
-{
+const CategoryForm = ({ category, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     image: ''
   });
 
-  useEffect(() =>
-  {
-    if (category)
-    {
+  useEffect(() => {
+    if (category) {
       setFormData({
         name: category.name || '',
         description: category.description || '',
@@ -20,8 +17,7 @@ const CategoryForm = ({ category, onSave, onCancel }) =>
     }
   }, [category]);
 
-  const handleChange = (e) =>
-  {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -29,8 +25,7 @@ const CategoryForm = ({ category, onSave, onCancel }) =>
     }));
   };
 
-  const handleSubmit = (e) =>
-  {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const categoryData = {
@@ -42,8 +37,15 @@ const CategoryForm = ({ category, onSave, onCancel }) =>
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Blur overlay */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onCancel} // click outside modal to close
+      ></div>
+
+      {/* Modal */}
+      <div className="relative bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl z-10">
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-2xl font-semibold text-gray-900 m-0">
             {category ? 'Edit Category' : 'Add New Category'}

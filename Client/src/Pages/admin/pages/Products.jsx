@@ -3,54 +3,43 @@ import { products } from '../data/dummyData';
 import ProductCard from '../components/ProductCard';
 import ProductForm from '../components/ProductForm';
 
-const Products = () =>
-{
+const Products = () => {
   const [productList, setProductList] = useState(products);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
 
-  const filteredProducts = productList.filter(product =>
-  {
+  const filteredProducts = productList.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'all' || product.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const handleAddProduct = () =>
-  {
+  const handleAddProduct = () => {
     setEditingProduct(null);
     setShowForm(true);
   };
 
-  const handleEditProduct = (product) =>
-  {
+  const handleEditProduct = (product) => {
     setEditingProduct(product);
     setShowForm(true);
   };
 
-  const handleDeleteProduct = (productId) =>
-  {
-    if (window.confirm('Are you sure you want to delete this product?'))
-    {
+  const handleDeleteProduct = (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
       setProductList(productList.filter(product => product.id !== productId));
     }
   };
 
-  const handleSaveProduct = (productData) =>
-  {
-    if (editingProduct)
-    {
-      // Update existing product
+  const handleSaveProduct = (productData) => {
+    if (editingProduct) {
       setProductList(productList.map(product =>
         product.id === editingProduct.id
           ? { ...product, ...productData, id: product.id }
           : product
       ));
-    } else
-    {
-      // Add new product
+    } else {
       const newProduct = {
         ...productData,
         id: Math.max(...productList.map(p => p.id)) + 1,
@@ -67,10 +56,11 @@ const Products = () =>
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold text-gray-900">Products Management</h1>
+      {/* Header + Add Button */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Products Management</h1>
         <button
-          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center gap-2"
+          className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition-colors duration-200 flex items-center gap-2 w-full sm:w-auto justify-center"
           onClick={handleAddProduct}
         >
           <span>+</span> Add Product
@@ -78,8 +68,8 @@ const Products = () =>
       </div>
 
       {/* Search and Categories */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-6 items-start">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6 items-start sm:items-center flex-wrap">
+        <div className="flex-1 max-w-md w-full">
           <input
             type="text"
             placeholder="Search products..."
@@ -89,10 +79,9 @@ const Products = () =>
           />
         </div>
 
-        <div className="sm:flex gap-2 flex-wrap">
-          {categories.map(category =>
-          {
-            const isActive = category === filterCategory; // Active category check
+        <div className="flex gap-2 flex-wrap w-full sm:w-auto">
+          {categories.map(category => {
+            const isActive = category === filterCategory;
             return (
               <button
                 key={category}
@@ -111,7 +100,7 @@ const Products = () =>
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredProducts.map(product => (
           <ProductCard
             key={product.id}
@@ -127,8 +116,7 @@ const Products = () =>
         <ProductForm
           product={editingProduct}
           onSave={handleSaveProduct}
-          onCancel={() =>
-          {
+          onCancel={() => {
             setShowForm(false);
             setEditingProduct(null);
           }}

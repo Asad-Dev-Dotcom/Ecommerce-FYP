@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
-const Settings = () => {
+const Settings = () =>
+{
   const [siteSettings, setSiteSettings] = useState({
     siteName: 'E-commerce Admin',
     siteDescription: 'Admin dashboard for managing your online store',
@@ -19,7 +20,8 @@ const Settings = () => {
     confirmPassword: ''
   });
 
-  const handleSiteSettingsChange = (e) => {
+  const handleSiteSettingsChange = (e) =>
+  {
     const { name, value, type, checked } = e.target;
     setSiteSettings(prev => ({
       ...prev,
@@ -27,7 +29,8 @@ const Settings = () => {
     }));
   };
 
-  const handleProfileSettingsChange = (e) => {
+  const handleProfileSettingsChange = (e) =>
+  {
     const { name, value } = e.target;
     setProfileSettings(prev => ({
       ...prev,
@@ -35,14 +38,17 @@ const Settings = () => {
     }));
   };
 
-  const handleSaveSiteSettings = (e) => {
+  const handleSaveSiteSettings = (e) =>
+  {
     e.preventDefault();
     alert('Site settings saved successfully!');
   };
 
-  const handleSaveProfileSettings = (e) => {
+  const handleSaveProfileSettings = (e) =>
+  {
     e.preventDefault();
-    if (profileSettings.newPassword !== profileSettings.confirmPassword) {
+    if (profileSettings.newPassword !== profileSettings.confirmPassword)
+    {
       alert('New passwords do not match!');
       return;
     }
@@ -57,10 +63,10 @@ const Settings = () => {
 
       <div className="space-y-8">
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Site Settings</h2>
+          <h2 className="w-fit text-2xl font-semibold bg-black text-white mb-6 px-4 py-2 rounded-md">Site Settings</h2>
           <form onSubmit={handleSaveSiteSettings} className="space-y-6">
             <div>
-              <label htmlFor="siteName" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="siteName" className="block text-lg font-medium text-gray-700 mb-2">
                 Site Name
               </label>
               <input
@@ -69,12 +75,21 @@ const Settings = () => {
                 name="siteName"
                 value={siteSettings.siteName}
                 onChange={handleSiteSettingsChange}
-                className="input-field"
+                className="input-field 
+              w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500
+            "
               />
             </div>
 
             <div>
-              <label htmlFor="siteDescription" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="siteDescription" className="block text-lg font-medium text-gray-700 mb-2">
                 Site Description
               </label>
               <textarea
@@ -83,13 +98,22 @@ const Settings = () => {
                 value={siteSettings.siteDescription}
                 onChange={handleSiteSettingsChange}
                 rows="3"
-                className="input-field resize-vertical"
+                className="input-field resize-vertical 
+              w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500
+            "
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="contactEmail" className="block text-lg font-medium text-gray-700 mb-2">
                   Contact Email
                 </label>
                 <input
@@ -98,12 +122,21 @@ const Settings = () => {
                   name="contactEmail"
                   value={siteSettings.contactEmail}
                   onChange={handleSiteSettingsChange}
-                  className="input-field"
+                  className="input-field 
+              w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500
+            "
                 />
               </div>
 
               <div>
-                <label htmlFor="currency" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="currency" className="block text-lg font-medium text-gray-700 mb-2">
                   Currency
                 </label>
                 <select
@@ -111,7 +144,10 @@ const Settings = () => {
                   name="currency"
                   value={siteSettings.currency}
                   onChange={handleSiteSettingsChange}
-                  className="input-field"
+                  className="input-field px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-700
+             hover:border-red-500
+             focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+             transition-all duration-300"
                 >
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
@@ -122,7 +158,7 @@ const Settings = () => {
             </div>
 
             <div>
-              <label htmlFor="timezone" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="timezone" className="block text-lg font-medium text-gray-700 mb-2">
                 Timezone
               </label>
               <select
@@ -130,13 +166,17 @@ const Settings = () => {
                 name="timezone"
                 value={siteSettings.timezone}
                 onChange={handleSiteSettingsChange}
-                className="input-field"
+                className="px-3 py-2 border border-gray-300 rounded-md bg-white text-gray-700
+             hover:border-red-500
+             focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
+             transition-all duration-300"
               >
                 <option value="UTC">UTC</option>
                 <option value="EST">Eastern Time</option>
                 <option value="PST">Pacific Time</option>
                 <option value="GMT">GMT</option>
               </select>
+
             </div>
 
             <div className="flex items-center">
@@ -146,25 +186,37 @@ const Settings = () => {
                 name="maintenanceMode"
                 checked={siteSettings.maintenanceMode}
                 onChange={handleSiteSettingsChange}
-                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                className="w-4 h-4 accent-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
               />
-              <label htmlFor="maintenanceMode" className="ml-2 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="maintenanceMode"
+                className="ml-2 text-lg font-medium text-gray-700"
+              >
                 Maintenance Mode
               </label>
             </div>
 
-            <button type="submit" className="btn-primary">
+
+            <button
+              type="submit"
+              className="bg-red-600 text-white rounded-md px-4 py-2 hover:bg-red-700 transition-colors duration-300"
+            >
               Save Site Settings
             </button>
+
           </form>
         </div>
 
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-6">Profile Settings</h2>
+          <h2 className="w-fit text-2xl font-semibold bg-black text-white mb-6 px-4 py-2 rounded-md">
+  Profile Settings
+</h2>
+
+
           <form onSubmit={handleSaveProfileSettings} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="profileName" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="profileName" className="block text-lg font-medium text-gray-700 mb-2">
                   Full Name
                 </label>
                 <input
@@ -173,12 +225,19 @@ const Settings = () => {
                   name="name"
                   value={profileSettings.name}
                   onChange={handleProfileSettingsChange}
-                  className="input-field"
+                  className="input-field w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500"
                 />
               </div>
 
               <div>
-                <label htmlFor="profileEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="profileEmail" className="block text-lg font-medium text-gray-700 mb-2">
                   Email
                 </label>
                 <input
@@ -187,22 +246,29 @@ const Settings = () => {
                   name="email"
                   value={profileSettings.email}
                   onChange={handleProfileSettingsChange}
-                  className="input-field"
+                  className="input-field w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3">
+              <label className="block text-lg font-medium text-gray-700 mb-3">
                 Profile Picture
               </label>
               <div className="flex items-center gap-4">
                 <img
                   src={profileSettings.avatar}
                   alt="Profile"
-                  className="w-16 h-16 rounded-full"
+                  className="w-16 h-16 rounded-full "
                 />
-                <button type="button" className="btn-secondary">
+                <button type="button" className="btn-secondary bg-red-600 text-white rounded-md px-4 py-2 hover:bg-red-700 transition-colors duration-300 ">
                   Change Avatar
                 </button>
               </div>
@@ -220,13 +286,20 @@ const Settings = () => {
                   name="currentPassword"
                   value={profileSettings.currentPassword}
                   onChange={handleProfileSettingsChange}
-                  className="input-field"
+                  className="input-field w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="newPassword" className="block text-lg font-medium text-gray-700 mb-2">
                     New Password
                   </label>
                   <input
@@ -235,12 +308,19 @@ const Settings = () => {
                     name="newPassword"
                     value={profileSettings.newPassword}
                     onChange={handleProfileSettingsChange}
-                    className="input-field"
+                    className="input-field w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="confirmPassword" className="block text-lg font-medium text-gray-700 mb-2">
                     Confirm Password
                   </label>
                   <input
@@ -249,13 +329,20 @@ const Settings = () => {
                     name="confirmPassword"
                     value={profileSettings.confirmPassword}
                     onChange={handleProfileSettingsChange}
-                    className="input-field"
+                    className="input-field w-full lg:w-80
+              px-4 py-2 text-base
+              border border-gray-300 rounded-lg
+              transition-all duration-200
+              hover:border-red-500
+              focus:outline-none
+              focus:border-red-500
+              focus:ring-1 focus:ring-red-500"
                   />
                 </div>
               </div>
             </div>
 
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="btn-primary bg-red-600 text-white rounded-md px-4 py-2 hover:bg-red-700 transition-colors duration-300">
               Save Profile Settings
             </button>
           </form>

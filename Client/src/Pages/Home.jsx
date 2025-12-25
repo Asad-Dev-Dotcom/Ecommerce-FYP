@@ -11,7 +11,9 @@ import Others from "../Components/Others/Others";
 
 const Home = () =>
 {
+
   return (
+    
     <div className="flex flex-col items-center w-full ">
       {/* Top Row: Sidebar + Slider */}
       <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 w-full ">
