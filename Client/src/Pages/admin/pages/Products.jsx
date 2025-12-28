@@ -70,13 +70,22 @@ const Products = () => {
       {/* Search and Categories */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6 items-start sm:items-center flex-wrap">
         <div className="flex-1 max-w-md w-full">
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
+        <input
+  type="text"
+  placeholder="Search products..."
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)}
+  className="
+    w-full rounded-lg px-4 py-2
+    border border-gray-300
+    outline-none
+    transition-all duration-200
+    hover:border-red-500
+    focus:border-red-600
+    focus:ring-2 focus:ring-red-500
+  "
+/>
+
         </div>
 
         <div className="flex gap-2 flex-wrap w-full sm:w-auto">
@@ -84,16 +93,19 @@ const Products = () => {
             const isActive = category === filterCategory;
             return (
               <button
-                key={category}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 
-                  ${isActive
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-200 text-black hover:bg-gray-300'
-                  }`}
-                onClick={() => setFilterCategory(category)}
-              >
-                {category === 'all' ? 'All Categories' : category}
-              </button>
+  key={category}
+  className={`px-4 py-2 rounded-lg text-sm font-medium 
+    transition-all duration-200
+    ${
+      isActive
+        ? 'bg-red-600 text-white'
+        : 'bg-gray-200 text-black hover:ring-2 hover:ring-red-500 hover:bg-transparent'
+    }`}
+  onClick={() => setFilterCategory(category)}
+>
+  {category === 'all' ? 'All Categories' : category}
+</button>
+
             );
           })}
         </div>

@@ -85,24 +85,26 @@ const Orders = () => {
             const isActive = status === filterStatus;
 
             return (
-              <button
-                key={status}
-                onClick={() => setFilterStatus(status)}
-                className={`
-                  px-6 py-2 rounded-lg text-sm font-medium
-                  transition-colors duration-200
-                  whitespace-nowrap
-                  ${isActive
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-200 text-black hover:bg-gray-300'
-                  }
-                `}
-              >
-                {status === 'all'
-                  ? 'All Status'
-                  : status.charAt(0).toUpperCase() + status.slice(1)
-                }
-              </button>
+            <button
+  key={status}
+  onClick={() => setFilterStatus(status)}
+  className={`
+    px-6 py-2 rounded-lg text-sm font-medium
+    transition-all duration-200
+    whitespace-nowrap
+    ${
+      isActive
+        ? 'bg-red-600 text-white'
+        : 'bg-gray-200 text-black hover:ring-2 hover:ring-red-500 hover:bg-transparent'
+    }
+  `}
+>
+  {status === 'all'
+    ? 'All Status'
+    : status.charAt(0).toUpperCase() + status.slice(1)
+  }
+</button>
+
             );
           })}
         </div>

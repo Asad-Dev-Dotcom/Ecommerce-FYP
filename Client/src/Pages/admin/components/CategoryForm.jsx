@@ -36,12 +36,20 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     onSave(categoryData);
   };
 
+  // Tailwind input classes: default gray, hover red, focus thick red
+  const inputClass = `
+    w-full p-2 border border-gray-400 text-black rounded
+    outline-none
+    hover:border-red-500
+    focus:border-red-600 focus:ring-2 focus:ring-red-600
+  `;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Blur overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onCancel} // click outside modal to close
+        onClick={onCancel} 
       ></div>
 
       {/* Modal */}
@@ -59,6 +67,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          {/* Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
               Category Name *
@@ -69,11 +78,12 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
+              className={inputClass}
               required
             />
           </div>
 
+          {/* Description */}
           <div>
             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
               Description *
@@ -84,11 +94,12 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               value={formData.description}
               onChange={handleChange}
               rows="4"
-              className="w-full p-2 border border-black text-black rounded resize-vertical outline-none focus:outline-red-500 focus:outline-2"
+              className={inputClass + " resize-vertical"}
               required
             />
           </div>
 
+          {/* Image URL */}
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
               Image URL *
@@ -100,11 +111,12 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               value={formData.image}
               onChange={handleChange}
               placeholder="https://example.com/image.jpg"
-              className="w-full p-2 border border-black text-black rounded outline-none focus:outline-red-500 focus:outline-2"
+              className={inputClass}
               required
             />
           </div>
 
+          {/* Image Preview */}
           {formData.image && (
             <div className="text-center">
               <img
@@ -115,6 +127,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
             </div>
           )}
 
+          {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"

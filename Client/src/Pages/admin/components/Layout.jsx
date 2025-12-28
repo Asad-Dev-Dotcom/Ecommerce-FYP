@@ -9,7 +9,7 @@ const Layout = ({ currentPage, setCurrentPage, children }) => {
       <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
 
       {/* Main content */}
-      <div className="flex-1 ml-70 flex flex-col">
+      <div className="flex-1  flex flex-col">
         {/* Header fixed at top of main content */}
         <Header />
 

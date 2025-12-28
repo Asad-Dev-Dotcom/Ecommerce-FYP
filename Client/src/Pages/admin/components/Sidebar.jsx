@@ -7,8 +7,7 @@ import { FaUsers } from "react-icons/fa6";
 import { IoMdSettings } from "react-icons/io";
 import { HiMenu, HiX } from "react-icons/hi";
 
-const Sidebar = ({ currentPage, setCurrentPage }) =>
-{
+const Sidebar = ({ currentPage, setCurrentPage }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
@@ -24,11 +23,11 @@ const Sidebar = ({ currentPage, setCurrentPage }) =>
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 has-[800px]: w-64 bg-gradient-to-b from-gray-100 to-gray-200 text-black flex flex-col shadow-lg z-40 transform transition-transform duration-300
+        className={`sticky  top-0 left-0 w-64 bg-gradient-to-b from-gray-100 to-gray-200 text-black flex flex-col shadow-lg z-40 transform transition-transform duration-300
         ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0`}
       >
         {/* Header */}
-        <div className="py-40 p-5 pb-4 border-b border-black/10">
+        <div className="py-8 p-5 pb-4 border-b border-black/10">
           <h2 className="text-2xl font-semibold bg-gradient-to-r from-black to-gray-800 bg-clip-text text-transparent">
             Admin Panel
           </h2>
@@ -39,22 +38,23 @@ const Sidebar = ({ currentPage, setCurrentPage }) =>
           <ul className="list-none m-0 p-0">
             {menuItems.map(item => (
               <li key={item.id} className="mb-1">
-                <button
-                  className={`flex items-center w-full px-5 py-3 text-left text-black/80 
-    rounded-r-2xl mr-2 focus:outline-none transition-all duration-300
-    ${currentPage === item.id
-                      ? 'bg-black text-white shadow-lg'
-                      : 'hover:bg-black hover:text-white'
-                    }`}
-                  onClick={() =>
-                  {
-                    setCurrentPage(item.id);
-                    setIsOpen(false);
-                  }}
-                >
-                  <span className="mr-3 text-lg w-5 text-center">{item.icon}</span>
-                  <span className="flex-1">{item.label}</span>
-                </button>
+               <button
+  className={`flex items-center w-full px-5 py-3 text-left 
+    rounded-r-2xl mr-2 transition-all duration-300
+    ${
+      currentPage === item.id
+        ? 'bg-black text-white shadow-lg'
+        : 'text-black/80 hover:ring-2 hover:ring-black hover:bg-transparent'
+    }`}
+  onClick={() => {
+    setCurrentPage(item.id);
+    setIsOpen(false);
+  }}
+>
+  <span className="mr-3 text-lg w-5 text-center">{item.icon}</span>
+  <span className="flex-1">{item.label}</span>
+</button>
+
 
               </li>
             ))}

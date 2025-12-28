@@ -82,14 +82,18 @@ function Header()
         {/* Right: Search + Icons */}
         <div className="flex items-center gap-4 relative">
           {/* Search Desktop */}
-          <div className="hidden md:flex relative bg-gray-100 rounded-md px-4 py-2 w-[300px]">
-            <input
-              type="text"
-              value={query}
-              onChange={handleSearch}
-              placeholder="Search products..."
-              className="flex-1 bg-transparent outline-none text-sm placeholder-gray-500 rounded-md"
-            />
+         <div className="hidden md:flex relative bg-gray-100 rounded-md px-4 py-2 w-[300px]
+  transition-all duration-300
+  hover:ring-2 hover:ring-red-500
+  focus-within:ring-2 focus-within:ring-red-600">
+  
+  <input
+    type="text"
+    value={query}
+    onChange={handleSearch}
+    placeholder="Search products..."
+    className="flex-1 bg-transparent outline-none text-sm placeholder-gray-500"
+  />
             <CiSearch className="text-black text-2xl cursor-pointer ml-2" />
 
             {/* Suggestions */}
