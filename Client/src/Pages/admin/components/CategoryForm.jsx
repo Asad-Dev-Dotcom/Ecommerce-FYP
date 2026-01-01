@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 
-const CategoryForm = ({ category, onSave, onCancel }) => {
+const CategoryForm = ({ category, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    image: ''
+    imageFile: null, // file object
+    imagePreview: '' // preview URL
   });
 
-  useEffect(() => {
-    if (category) {
+  useEffect(() =>
+  {
+    if (category)
+    {
       setFormData({
         name: category.name || '',
         description: category.description || '',
-        image: category.image || ''
+        imageFile: null,
+        imagePreview: category.image || ''
       });
     }
   }, [category]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -25,18 +31,35 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (e) =>
+  {
+    const file = e.target.files[0];
+    if (file)
+    {
+      setFormData(prev => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file)
+      }));
+    }
+  };
+
+  const handleSubmit = (e) =>
+  {
     e.preventDefault();
 
     const categoryData = {
-      ...formData,
+      name: formData.name,
+      description: formData.description,
+      // Agar file upload ho, to backend ke liye ye file bheji ja sakti hai
+      imageFile: formData.imageFile,
+      imagePreview: formData.imagePreview,
       productCount: category ? category.productCount : 0
     };
 
     onSave(categoryData);
   };
 
-  // Tailwind input classes: default gray, hover red, focus thick red
   const inputClass = `
     w-full p-2 border border-gray-400 text-black rounded
     outline-none
@@ -49,7 +72,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
       {/* Blur overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onCancel} 
+        onClick={onCancel}
       ></div>
 
       {/* Modal */}
@@ -99,33 +122,47 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
             />
           </div>
 
-          {/* Image URL */}
+          {/* Image Upload */}
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-              Image URL *
+              Upload Image *
             </label>
             <input
-              type="url"
+              type="file"
               id="image"
-              name="image"
-              value={formData.image}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className={inputClass}
-              required
+              accept="image/*"
+              onChange={handleImageChange}
+              className={inputClass + " p-1"}
+              required={!formData.imagePreview} // agar edit hai aur image already hai, optional
             />
           </div>
 
           {/* Image Preview */}
-          {formData.image && (
-            <div className="text-center">
-              <img
-                src={formData.image}
-                alt="Category preview"
-                className="max-w-full max-h-32 rounded-lg shadow-sm mx-auto"
-              />
-            </div>
-          )}
+         {/* Image Preview with remove button */}
+{formData.imagePreview && (
+  <div className="relative text-center mt-2">
+    <img
+      src={formData.imagePreview}
+      alt="Category preview"
+      className="max-w-full max-h-32 rounded-lg shadow-sm mx-auto"
+    />
+    {/* Remove button */}
+    <button
+      type="button"
+      onClick={() => setFormData(prev => ({ ...prev, imageFile: null, imagePreview: '' }))}
+      className="   absolute top-1 right-1
+    w-6 h-6
+    flex items-center justify-center
+    bg-red-600 text-white
+    rounded-full
+    text-sm font-bold
+    hover:bg-red-700"
+    >
+      ×
+    </button>
+  </div>
+)}
+
 
           {/* Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">

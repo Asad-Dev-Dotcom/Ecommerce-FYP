@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { categories } from '../data/dummyData';
 
-const ProductForm = ({ product, onSave, onCancel }) => {
+const ProductForm = ({ product, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -10,12 +11,14 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     category: '',
     sku: '',
     stock: '',
-    images: [''],
+    images: [],
     variants: []
   });
 
-  useEffect(() => {
-    if (product) {
+  useEffect(() =>
+  {
+    if (product)
+    {
       setFormData({
         title: product.title || '',
         description: product.description || '',
@@ -24,13 +27,14 @@ const ProductForm = ({ product, onSave, onCancel }) => {
         category: product.category || '',
         sku: product.sku || '',
         stock: product.stock || '',
-        images: product.images || [''],
+        images: product.images || [], // URLs in edit mode
         variants: product.variants || []
       });
     }
   }, [product]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -38,64 +42,67 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }));
   };
 
-  const handleImageChange = (index, value) => {
-    const newImages = [...formData.images];
-    newImages[index] = value;
-    setFormData(prev => ({
-      ...prev,
-      images: newImages
-    }));
-  };
+  // IMAGE UPLOAD (MAX 5)
+  const handleImageUpload = (e) =>
+  {
+    const files = Array.from(e.target.files);
 
-  const addImageField = () => {
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, '']
-    }));
-  };
-
-  const removeImageField = (index) => {
-    if (formData.images.length > 1) {
-      const newImages = formData.images.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        images: newImages
-      }));
+    if (files.length + formData.images.length > 5)
+    {
+      alert('You can not upload more than 5 images per product.');
+      return;
     }
+
+    setFormData(prev => ({
+      ...prev,
+      images: [...prev.images, ...files] // mix: URL + File
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const removeImage = (index) =>
+  {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSubmit = (e) =>
+  {
     e.preventDefault();
 
     const productData = {
       ...formData,
       price: parseFloat(formData.price),
-      discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : null,
+      discountPrice: formData.discountPrice
+        ? parseFloat(formData.discountPrice)
+        : null,
       stock: parseInt(formData.stock),
-      images: formData.images.filter(img => img.trim() !== ''),
+      images: formData.images, // URLs + Files
       status: 'active'
     };
 
     onSave(productData);
   };
 
-  // Tailwind input classes with hover/focus outline effect
-const inputClass = `
-  w-full p-2 border border-gray-400 text-black rounded
-  outline-none
-  hover:border-red-500
-  focus:border-red-600 focus:ring-2 focus:ring-red-500
-`;
+  const inputClass = `
+    w-full p-2 border border-gray-400 text-black rounded
+    outline-none
+    hover:border-red-500
+    focus:border-red-600 focus:ring-2 focus:ring-red-500
+  `;
 
   return (
     <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+
+        {/* HEADER */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-2xl font-semibold text-gray-900 m-0">
             {product ? 'Edit Product' : 'Add New Product'}
           </h2>
           <button
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none focus:outline-none"
+            className="text-gray-400 hover:text-gray-600 text-2xl"
             onClick={onCancel}
           >
             ×
@@ -103,14 +110,14 @@ const inputClass = `
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Product Title */}
+
+          {/* TITLE */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Product Title *
             </label>
             <input
               type="text"
-              id="title"
               name="title"
               value={formData.title}
               onChange={handleChange}
@@ -119,65 +126,58 @@ const inputClass = `
             />
           </div>
 
-          {/* Description */}
+          {/* DESCRIPTION */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Description *
             </label>
             <textarea
-              id="description"
               name="description"
+              rows="4"
               value={formData.description}
               onChange={handleChange}
-              rows="4"
-              className={inputClass + " resize-vertical"}
+              className={inputClass}
               required
             />
           </div>
 
-          {/* Price & Discount */}
+          {/* PRICE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Price *
               </label>
               <input
                 type="number"
-                id="price"
                 name="price"
                 value={formData.price}
                 onChange={handleChange}
-                step="0.01"
-                min="0"
                 className={inputClass}
                 required
               />
             </div>
+
             <div>
-              <label htmlFor="discountPrice" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Discount Price
               </label>
               <input
                 type="number"
-                id="discountPrice"
                 name="discountPrice"
                 value={formData.discountPrice}
                 onChange={handleChange}
-                step="0.01"
-                min="0"
                 className={inputClass}
               />
             </div>
           </div>
 
-          {/* Category & SKU */}
+          {/* CATEGORY & SKU */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 Category *
               </label>
               <select
-                id="category"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
@@ -186,17 +186,19 @@ const inputClass = `
               >
                 <option value="">Select Category</option>
                 {categories.map(cat => (
-                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  <option key={cat.id} value={cat.name}>
+                    {cat.name}
+                  </option>
                 ))}
               </select>
             </div>
+
             <div>
-              <label htmlFor="sku" className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium mb-2">
                 SKU *
               </label>
               <input
                 type="text"
-                id="sku"
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
@@ -206,74 +208,85 @@ const inputClass = `
             </div>
           </div>
 
-          {/* Stock */}
+          {/* STOCK */}
           <div>
-            <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Stock Quantity *
             </label>
             <input
               type="number"
-              id="stock"
               name="stock"
               value={formData.stock}
               onChange={handleChange}
-              min="0"
               className={inputClass}
               required
             />
           </div>
 
-          {/* Product Images */}
+          {/* IMAGE UPLOAD */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Product Images *
             </label>
-            {formData.images.map((image, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <input
-                  type="url"
-                  placeholder="Image URL"
-                  value={image}
-                  onChange={(e) => handleImageChange(index, e.target.value)}
-                  className={inputClass}
-                  required={index === 0}
-                />
-                {formData.images.length > 1 && (
-                  <button
-                    type="button"
-                    className="bg-black text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-800"
-                    onClick={() => removeImageField(index)}
-                  >
-                    Remove
-                  </button>
-                )}
+
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageUpload}
+              className={inputClass}
+            />
+
+            {formData.images.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                {formData.images.map((img, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={typeof img === 'string'
+                        ? img
+                        : URL.createObjectURL(img)}
+                      alt="preview"
+                      className="w-full h-32 object-cover rounded border"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="
+    absolute top-1 right-1
+    w-6 h-6
+    flex items-center justify-center
+    bg-red-600 text-white
+    rounded-full
+    text-sm font-bold
+    hover:bg-red-700
+  "
+                    >
+                      ✕
+                    </button>
+
+                  </div>
+                ))}
               </div>
-            ))}
-            <button
-              type="button"
-              className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 mt-2 hover:bg-gray-800"
-              onClick={addImageField}
-            >
-              + Add Another Image
-            </button>
+            )}
           </div>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-3 pt-5 border-t border-gray-200">
+          {/* BUTTONS (UNCHANGED) */}
+          <div className="flex justify-end gap-3 pt-5 border-t">
             <button
               type="button"
-              className="bg-black text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800"
               onClick={onCancel}
+              className="bg-black text-white px-4 py-2 rounded"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded"
             >
               {product ? 'Update Product' : 'Add Product'}
             </button>
           </div>
+
         </form>
       </div>
     </div>
