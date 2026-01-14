@@ -3,29 +3,29 @@ import { categories } from '../data/dummyData';
 
 const ProductForm = ({ product, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    title: '',
+    name: '',
     description: '',
     price: '',
-    discountPrice: '',
     category: '',
-    sku: '',
     stock: '',
-    images: [''],
-    variants: []
+    is_flash_sale: false,
+    flash_sale_price: '',
+    images: [],
+    existingImages: []
   });
 
   useEffect(() => {
     if (product) {
       setFormData({
-        title: product.title || '',
+        name: product.name || '',
         description: product.description || '',
         price: product.price || '',
-        discountPrice: product.discountPrice || '',
         category: product.category || '',
-        sku: product.sku || '',
         stock: product.stock || '',
-        images: product.images || [''],
-        variants: product.variants || []
+        is_flash_sale: product.is_flash_sale || false,
+        flash_sale_price: product.flash_sale_price || '',
+        images: [], // New images to upload
+        existingImages: product.images || [] // Existing images
       });
     }
   }, [product]);
@@ -38,45 +38,57 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }));
   };
 
-  const handleImageChange = (index, value) => {
-    const newImages = [...formData.images];
-    newImages[index] = value;
+  const handleImageUpload = (e) => {
+    const files = Array.from(e.target.files);
     setFormData(prev => ({
       ...prev,
-      images: newImages
+      images: [...prev.images, ...files]
     }));
   };
 
-  const addImageField = () => {
+  const removeImage = (index) => {
     setFormData(prev => ({
       ...prev,
-      images: [...prev.images, '']
+      images: prev.images.filter((_, i) => i !== index)
     }));
   };
 
-  const removeImageField = (index) => {
-    if (formData.images.length > 1) {
-      const newImages = formData.images.filter((_, i) => i !== index);
-      setFormData(prev => ({
-        ...prev,
-        images: newImages
-      }));
-    }
+  const removeExistingImage = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      existingImages: prev.existingImages.filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const productData = {
-      ...formData,
-      price: parseFloat(formData.price),
-      discountPrice: formData.discountPrice ? parseFloat(formData.discountPrice) : null,
-      stock: parseInt(formData.stock),
-      images: formData.images.filter(img => img.trim() !== ''),
-      status: 'active'
-    };
+    const formDataToSend = new FormData();
 
-    onSave(productData);
+    // Add basic fields
+    formDataToSend.append('name', formData.name);
+    formDataToSend.append('description', formData.description);
+    formDataToSend.append('price', formData.price);
+    formDataToSend.append('category', formData.category);
+    formDataToSend.append('stock', formData.stock);
+
+    // Add flash sale fields
+    formDataToSend.append('is_flash_sale', formData.is_flash_sale);
+    if (formData.is_flash_sale && formData.flash_sale_price) {
+      formDataToSend.append('flash_sale_price', formData.flash_sale_price);
+    }
+
+    // Add existing images (for edit mode)
+    if (formData.existingImages && formData.existingImages.length > 0) {
+      formDataToSend.append('existingImages', JSON.stringify(formData.existingImages));
+    }
+
+    // Add new image files
+    formData.images.forEach((file) => {
+      formDataToSend.append('images', file);
+    });
+
+    onSave(formDataToSend);
   };
 
   // Tailwind input classes with hover/focus outline effect
@@ -103,16 +115,16 @@ const inputClass = `
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
-          {/* Product Title */}
+          {/* Product Name */}
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              Product Title *
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              Product Name *
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
-              value={formData.title}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               className={inputClass}
               required
@@ -135,75 +147,80 @@ const inputClass = `
             />
           </div>
 
-          {/* Price & Discount */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                Price *
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className={inputClass}
-                required
-              />
-            </div>
-            <div>
-              <label htmlFor="discountPrice" className="block text-sm font-medium text-gray-700 mb-2">
-                Discount Price
-              </label>
-              <input
-                type="number"
-                id="discountPrice"
-                name="discountPrice"
-                value={formData.discountPrice}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className={inputClass}
-              />
-            </div>
+          {/* Price */}
+          <div>
+            <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+              Price *
+            </label>
+            <input
+              type="number"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              step="0.01"
+              min="0"
+              className={inputClass}
+              required
+            />
           </div>
 
-          {/* Category & SKU */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Flash Sale */}
+          <div>
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                name="is_flash_sale"
+                checked={formData.is_flash_sale}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  is_flash_sale: e.target.checked
+                }))}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium text-gray-700">Flash Sale</span>
+            </label>
+          </div>
+
+          {/* Flash Sale Price */}
+          {formData.is_flash_sale && (
             <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                Category *
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className={inputClass}
-                required
-              >
-                <option value="">Select Category</option>
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.name}>{cat.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="sku" className="block text-sm font-medium text-gray-700 mb-2">
-                SKU *
+              <label htmlFor="flash_sale_price" className="block text-sm font-medium text-gray-700 mb-2">
+                Flash Sale Price *
               </label>
               <input
-                type="text"
-                id="sku"
-                name="sku"
-                value={formData.sku}
+                type="number"
+                id="flash_sale_price"
+                name="flash_sale_price"
+                value={formData.flash_sale_price}
                 onChange={handleChange}
+                step="0.01"
+                min="0"
+                max={formData.price}
                 className={inputClass}
-                required
+                required={formData.is_flash_sale}
               />
             </div>
+          )}
+
+          {/* Category */}
+          <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+              Category *
+            </label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={inputClass}
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.name}>{cat.name}</option>
+              ))}
+            </select>
           </div>
 
           {/* Stock */}
@@ -223,39 +240,74 @@ const inputClass = `
             />
           </div>
 
-          {/* Product Images */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Product Images *
-            </label>
-            {formData.images.map((image, index) => (
-              <div key={index} className="flex gap-2 mb-2">
-                <input
-                  type="url"
-                  placeholder="Image URL"
-                  value={image}
-                  onChange={(e) => handleImageChange(index, e.target.value)}
-                  className={inputClass}
-                  required={index === 0}
-                />
-                {formData.images.length > 1 && (
-                  <button
-                    type="button"
-                    className="bg-black text-white px-3 py-2 rounded text-sm font-medium transition-colors duration-200 hover:bg-gray-800"
-                    onClick={() => removeImageField(index)}
-                  >
-                    Remove
-                  </button>
-                )}
+          {/* Existing Images (for edit mode) */}
+          {formData.existingImages && formData.existingImages.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Current Images
+              </label>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  {formData.existingImages.map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={image.url}
+                      alt={`Product ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                      onClick={() => removeExistingImage(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-            <button
-              type="button"
-              className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 mt-2 hover:bg-gray-800"
-              onClick={addImageField}
-            >
-              + Add Another Image
-            </button>
+            </div>
+          )}
+
+          {/* Upload New Images */}
+          <div>
+            <label htmlFor="images" className="block text-sm font-medium text-gray-700 mb-2">
+              {formData.existingImages && formData.existingImages.length > 0 ? 'Add More Images' : 'Product Images *'}
+            </label>
+            <input
+              type="file"
+              id="images"
+              name="images"
+              multiple
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+              required={!product || (formData.existingImages && formData.existingImages.length === 0)}
+            />
+            <p className="text-xs text-gray-500 mt-1">You can select multiple images</p>
+
+            {/* Preview new images */}
+            {formData.images && formData.images.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm font-medium text-gray-700 mb-2">New Images to Upload:</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {formData.images.map((file, index) => (
+                    <div key={index} className="relative">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`New ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+                        onClick={() => removeImage(index)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Buttons */}

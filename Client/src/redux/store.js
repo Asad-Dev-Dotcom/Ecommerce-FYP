@@ -10,6 +10,13 @@ import notificationsApis from "./apis/notificationsApis";
 import paymentApis from "./apis/paymentApis";
 import memberApis from "./apis/membersApis";
 
+// E-commerce APIs
+import homeApis from "./apis/homeApis";
+import dashboardApis from "./apis/dashboardApis";
+import productApis from "./apis/productApis";
+import categoryApis from "./apis/categoryApis";
+import orderApis from "./apis/orderApis";
+
 // Slices
 import authSlice from "./slices/authSlice";
 import userSlice from "./slices/userSlice";
@@ -33,6 +40,13 @@ export const store = configureStore({
     [invoiceApis.reducerPath]: invoiceApis.reducer,
     [paymentApis.reducerPath]: paymentApis.reducer,
 
+    // 🛒 E-commerce APIs
+    [homeApis.reducerPath]: homeApis.reducer,
+    [dashboardApis.reducerPath]: dashboardApis.reducer,
+    [productApis.reducerPath]: productApis.reducer,
+    [categoryApis.reducerPath]: categoryApis.reducer,
+    [orderApis.reducerPath]: orderApis.reducer,
+
     // 🧩 App slices
     [authSlice.name]: authSlice.reducer,
     [userSlice.name]: userSlice.reducer,
@@ -54,7 +68,12 @@ export const store = configureStore({
       .concat(notificationsApis.middleware)
       .concat(memberApis.middleware)
       .concat(invoiceApis.middleware)
-      .concat(paymentApis.middleware),
+      .concat(paymentApis.middleware)
+      .concat(homeApis.middleware)
+      .concat(dashboardApis.middleware)
+      .concat(productApis.middleware)
+      .concat(categoryApis.middleware)
+      .concat(orderApis.middleware),
 });
 
 

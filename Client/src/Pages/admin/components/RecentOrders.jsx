@@ -25,20 +25,20 @@ const RecentOrders = ({ orders }) => {
           <div key={order.id} className="flex justify-between items-center py-4 border-b border-gray-200 last:border-b-0">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <span className="font-semibold text-gray-800 text-sm">{order.id}</span>
+                <span className="font-semibold text-gray-800 text-sm">{order.orderNumber || order.id}</span>
                 <span className={`px-2 py-1 rounded-full text-white text-xs font-semibold uppercase ${getStatusColor(order.status)}`}>
                   {order.status}
                 </span>
               </div>
 
               <div className="flex gap-4">
-                <p className="text-sm text-gray-600 m-0">{order.customerName}</p>
-                <p className="text-sm text-gray-400 m-0">{order.orderDate}</p>
+                <p className="text-sm text-gray-600 m-0">{order.customer?.name || 'Unknown'}</p>
+                <p className="text-sm text-gray-400 m-0">{new Date(order.createdAt).toLocaleDateString()}</p>
               </div>
             </div>
 
             <div className="text-right">
-              <span className="text-base font-semibold text-gray-800">${order.total.toFixed(2)}</span>
+              <span className="text-base font-semibold text-gray-800">${order.totalAmount}</span>
             </div>
           </div>
         ))}

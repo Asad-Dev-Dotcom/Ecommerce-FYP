@@ -1,11 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { IoEyeOffOutline } from "react-icons/io5";
-import { useLoginMutation } from "../../redux/apis/authApis"
+import { useLoginMutation } from "../../redux/apis/authApis";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login()
 {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -15,7 +18,7 @@ function Login()
 
   const [errors, setErrors] = useState({});
 
-  const [login, { isLoading }] = useLoginMutation()
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleChange = (e) =>
   {
@@ -61,11 +64,16 @@ function Login()
     e.preventDefault();
     if (validate())
     {
-      const response = await login(formData).unwrap()
-      toast.success(response.message || "Login Successfull")
-    } else
-    {
-      toast.error(response.message || "Login Failed")
+      try
+      {
+        const response = await login(formData).unwrap();
+        toast.success(response.message || "Login Successful!");
+        navigate("/");
+      } catch (error)
+      {
+        toast.error(error?.data?.message || "Login Failed!");
+        console.error("Login error:", error);
+      }
     }
   };
 

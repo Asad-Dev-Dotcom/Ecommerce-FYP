@@ -1,47 +1,33 @@
 import React, { useState } from 'react';
-import { orders, users } from '../data/dummyData';
+import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from '../../../redux/apis/orderApis';
 import OrderCard from '../components/OrderCard';
 import OrderDetails from '../components/OrderDetails';
+import { toast } from 'react-toastify';
 
 const Orders = () => {
-  const [orderList, setOrderList] = useState(orders);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
 
-  const getCustomerName = (customerId) => {
-    const customer = users.find(user => user.id === customerId);
-    return customer ? customer.name : 'Unknown Customer';
-  };
-
-  const filteredOrders = orderList.filter(order => {
-    const matchesStatus =
-      filterStatus === 'all' || order.status === filterStatus;
-
-    const matchesSearch =
-      order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      getCustomerName(order.customerId)
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-
-    return matchesStatus && matchesSearch;
+  // API hooks
+  const { data: ordersData, isLoading, refetch } = useGetAllOrdersQuery({
+    status: filterStatus === 'all' ? undefined : filterStatus,
   });
+  const [updateOrderStatus] = useUpdateOrderStatusMutation();
 
-  const handleStatusChange = (orderId, newStatus) => {
-    setOrderList(orderList.map(order =>
-      order.id === orderId
-        ? {
-            ...order,
-            status: newStatus,
-            ...(newStatus === 'shipped' && {
-              shippedDate: new Date().toISOString().split('T')[0],
-            }),
-            ...(newStatus === 'delivered' && {
-              deliveredDate: new Date().toISOString().split('T')[0],
-            }),
-          }
-        : order
-    ));
+  const orders = ordersData?.data || [];
+
+  const handleStatusChange = async (orderId, newStatus, trackingNumber = '') => {
+    try {
+      await updateOrderStatus({
+        id: orderId,
+        status: newStatus,
+        trackingNumber
+      });
+      toast.success('Order status updated successfully');
+      refetch();
+    } catch (error) {
+      toast.error('Failed to update order status');
+    }
   };
 
   const statusOptions = ['all', 'pending', 'processing', 'shipped', 'delivered'];
@@ -112,44 +98,61 @@ const Orders = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Stat title="Total Orders" value={orderList.length} />
+        <Stat title="Total Orders" value={orders.length} />
         <Stat
           title="Pending Orders"
-          value={orderList.filter(o => o.status === 'pending').length}
+          value={orders.filter(o => o.status === 'pending').length}
         />
         <Stat
           title="Processing"
-          value={orderList.filter(o => o.status === 'processing').length}
+          value={orders.filter(o => o.status === 'processing').length}
         />
         <Stat
           title="Shipped"
-          value={orderList.filter(o => o.status === 'shipped').length}
+          value={orders.filter(o => o.status === 'shipped').length}
         />
       </div>
 
-      {/* Orders Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredOrders.map(order => (
-          <OrderCard
-            key={order.id}
-            order={order}
-            customerName={getCustomerName(order.customerId)}
-            onStatusChange={handleStatusChange}
-            onViewDetails={() => setSelectedOrder(order)}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="h-64 bg-gray-200 rounded-lg"></div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Orders Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {orders.map(order => (
+              <OrderCard
+                key={order._id}
+                order={{
+                  ...order,
+                  id: order._id,
+                  customerId: order.customer._id,
+                }}
+                customerName={order.customer?.name || 'Unknown Customer'}
+                onStatusChange={handleStatusChange}
+                onViewDetails={() => setSelectedOrder(order)}
+              />
+            ))}
+          </div>
 
-      {/* Order Details Modal */}
-      {selectedOrder && (
-        <OrderDetails
-          order={selectedOrder}
-          customer={users.find(
-            user => user.id === selectedOrder.customerId
+          {/* Order Details Modal */}
+          {selectedOrder && (
+            <OrderDetails
+              order={{
+                ...selectedOrder,
+                id: selectedOrder._id,
+              }}
+              customer={selectedOrder.customer}
+              onClose={() => setSelectedOrder(null)}
+              onStatusChange={handleStatusChange}
+            />
           )}
-          onClose={() => setSelectedOrder(null)}
-          onStatusChange={handleStatusChange}
-        />
+        </>
       )}
     </div>
   );

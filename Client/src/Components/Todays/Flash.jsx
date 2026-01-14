@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import ProductCard from "../ProductCard/Product_card";
 import { useDispatch } from "react-redux";
 import { setProducts } from "../../Features/Products/productsSlice";
+import { useGetFlashSaleProductsQuery } from "../../redux/apis/homeApis";
 
 const FlashSales = () =>
 {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const sliderRef = useRef(null);
+  const { data: products, isLoading, error } = useGetFlashSaleProductsQuery();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 3,
@@ -52,109 +54,18 @@ const FlashSales = () =>
     return () => clearInterval(timer);
   }, []);
 
-  // Flash Products
-  const products = [
-    {
-      id: 201,
-      image: "/Public/apple-iphone-14-pro-max-z357i (1).jpg",
-      title: "iPhone 14 Pro Max",
-      price: 1099,
-      originalPrice: 1299,
-      rating: 4.7,
-      category: "Mobiles",
-      description: "The iPhone 14 Pro Max features a powerful A16 chip and a stunning display.",
-    },
-    {
-      id: 202,
-      image: "https://images.unsplash.com/photo-1717354585346-c35eb01a1032",
-      title: "Samsung Galaxy S22",
-      price: 899,
-      originalPrice: 999,
-      rating: 4.4,
-      category: "Mobiles",
-      description: "Samsung Galaxy S22 offers a sleek design with fast processor and impressive camera setup.",
-    },
-    {
-      id: 203,
-      image: "https://images.unsplash.com/photo-1585386959984-a4155227c8c2",
-      title: "Sony WH-1000XM5",
-      price: 299,
-      originalPrice: 399,
-      rating: 4.8,
-      category: "Headphones",
-      description: "Sony WH-1000XM5 delivers excellent sound quality and noise cancellation.",
-    },
-    {
-      id: 204,
-      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
-      title: "MacBook Pro M2",
-      price: 1999,
-      originalPrice: 2299,
-      rating: 4.9,
-      category: "Computers",
-      description: "The MacBook Pro M2 is a powerful laptop with impressive performance.",
-    },
-    {
-      id: 205,
-      image: "https://images.unsplash.com/photo-1606813909353-2f3c61d29314",
-      title: "Apple Watch Ultra",
-      price: 699,
-      originalPrice: 799,
-      rating: 4.6,
-      category: "Smart Watch",
-      description: "Apple Watch Ultra offers a large display and advanced fitness features.",
-    },
-    {
-      id: 206,
-      image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
-      title: "JBL Speaker",
-      price: 149,
-      originalPrice: 199,
-      rating: 4.3,
-      category: "Speakers",
-      description: "JBL Speaker provides high-quality sound with portability.",
-    },
-    {
-      id: 207,
-      image: "https://images.unsplash.com/photo-1555617989-b7d3e69413f5",
-      title: "Sony Bluetooth Speaker",
-      price: 179,
-      originalPrice: 249,
-      rating: 4.6,
-      category: "Speakers",
-      description: "Sony Bluetooth Speaker offers superb sound quality and is waterproof.",
-    },
-    {
-      id: 208,
-      image: "https://images.unsplash.com/photo-1606813909353-2f3c61d29314",
-      title: "Fitbit Sense",
-      price: 299,
-      originalPrice: 349,
-      rating: 4.5,
-      category: "Smart Watch",
-      description: "Fitbit Sense is a health-focused smartwatch with built-in GPS and stress management tools.",
-    },
-    {
-      id: 209,
-      image: "https://images.unsplash.com/photo-1717354585346-c35eb01a1032",
-      title: "Samsung Galaxy Watch 4",
-      price: 250,
-      originalPrice: 280,
-      rating: 4.4,
-      category: "Smart Watch",
-      description: "Samsung Galaxy Watch 4 provides advanced health monitoring features and a sleek design.",
-    },
-    {
-      id: 210,
-      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97",
-      title: "Dell XPS 13",
-      price: 1399,
-      originalPrice: 1599,
-      rating: 4.6,
-      category: "Computers",
-      description: "Dell XPS 13 offers exceptional performance with a slim design and ultra-portable features.",
-    },
-  ];
+  // Transform API data to match ProductCard format
+  const transformedProducts = products?.map(product => ({
+    id: product._id,
+    image: product.images[0]?.url,
+    title: product.name,
+    price: product.is_flash_sale ? product.flash_sale_price : product.price,
+    originalPrice: product.is_flash_sale ? product.price : undefined,
+    rating: 4.5, // Default rating since we don't have this field
+    category: product.category,
+    description: product.description,
+    isFlashSale: product.is_flash_sale,
+  })) || [];
 
 
   // Slider scroll
@@ -166,6 +77,51 @@ const FlashSales = () =>
       behavior: "smooth",
     });
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full px-6 py-5">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="relative inline-block group cursor-pointer">
+            <div className="absolute top-0 left-0 h-full bg-red-500 rounded-sm transition-all duration-500 w-3 group-hover:w-full z-0"></div>
+            <h3 className="relative z-10 px-6 py-1 text-red-500 font-semibold transition-colors duration-500 group-hover:text-white">
+              Today's
+            </h3>
+          </div>
+        </div>
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Flash Sales</h2>
+        <div className="flex gap-6">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="min-w-[280px] animate-pulse">
+              <div className="bg-gray-200 h-[250px] rounded-lg"></div>
+              <div className="mt-3 space-y-2">
+                <div className="bg-gray-200 h-4 rounded w-3/4"></div>
+                <div className="bg-gray-200 h-4 rounded w-1/2"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full px-6 py-5">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Flash Sales</h2>
+        <p className="text-red-500">Failed to load flash sale products</p>
+      </div>
+    );
+  }
+
+  if (!transformedProducts || transformedProducts.length === 0) {
+    return (
+      <div className="w-full px-6 py-5">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">Flash Sales</h2>
+        <p className="text-gray-500">No flash sale products available at the moment.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full px-6 py-5">
@@ -236,7 +192,7 @@ const FlashSales = () =>
       {/* Product Slider */}
       <div className="w-full overflow-x-auto scrollbar-hide" ref={sliderRef}>
         <div className="flex gap-6 min-w-max scroll-smooth">
-          {products.map((p) => (
+          {transformedProducts.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>
@@ -250,7 +206,8 @@ const FlashSales = () =>
           <button
             onClick={() =>
             {
-              localStorage.setItem("products", JSON.stringify(products));
+              dispatch(setProducts(transformedProducts));
+              localStorage.setItem("products", JSON.stringify(transformedProducts));
               window.open("/products/flash-sales", "_blank"); // ✅ new path
             }}
             className="bg-red-600 text-white px-7 py-3 rounded-sm hover:bg-red-500 transition cursor-pointer mt-5 font-quicksand font-semibold"

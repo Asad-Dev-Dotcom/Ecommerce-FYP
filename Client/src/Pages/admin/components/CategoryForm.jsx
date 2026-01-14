@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 
 const CategoryForm = ({ category, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    title: '',
     description: '',
-    image: ''
+    image: null,
+    existingImage: null
   });
 
   useEffect(() => {
     if (category) {
       setFormData({
-        name: category.name || '',
+        title: category.title || '',
         description: category.description || '',
-        image: category.image || ''
+        image: null, // New image to upload
+        existingImage: category.image || null // Existing image
       });
     }
   }, [category]);
@@ -25,15 +27,29 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    setFormData(prev => ({
+      ...prev,
+      image: file
+    }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const categoryData = {
-      ...formData,
-      productCount: category ? category.productCount : 0
-    };
+    const formDataToSend = new FormData();
 
-    onSave(categoryData);
+    // Add basic fields
+    formDataToSend.append('title', formData.title);
+    formDataToSend.append('description', formData.description);
+
+    // Add image file if selected
+    if (formData.image) {
+      formDataToSend.append('image', formData.image);
+    }
+
+    onSave(formDataToSend);
   };
 
   // Tailwind input classes: default gray, hover red, focus thick red
@@ -67,16 +83,16 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Name */}
+          {/* Title */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Category Name *
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              Category Title *
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="title"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
               className={inputClass}
               required
@@ -99,20 +115,35 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
             />
           </div>
 
-          {/* Image URL */}
+          {/* Current Image (for edit mode) */}
+          {formData.existingImage && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Current Image
+              </label>
+              <div className="text-center">
+                <img
+                  src={formData.existingImage.url}
+                  alt="Current category image"
+                  className="max-w-full max-h-32 rounded-lg shadow-sm mx-auto"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Upload New Image */}
           <div>
             <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-2">
-              Image URL *
+              {formData.existingImage ? 'Replace Image' : 'Category Image *'}
             </label>
             <input
-              type="url"
+              type="file"
               id="image"
               name="image"
-              value={formData.image}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-              className={inputClass}
-              required
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"
+              required={!category}
             />
           </div>
 
@@ -120,7 +151,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
           {formData.image && (
             <div className="text-center">
               <img
-                src={formData.image}
+                src={URL.createObjectURL(formData.image)}
                 alt="Category preview"
                 className="max-w-full max-h-32 rounded-lg shadow-sm mx-auto"
               />

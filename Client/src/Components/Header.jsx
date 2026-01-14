@@ -7,6 +7,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import { SlLogout } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import { useState } from "react";
+import { useSearchProductsQuery } from "../redux/apis/homeApis";
 
 function Header()
 {
@@ -15,10 +16,13 @@ function Header()
 
   const cartItems = useSelector((state) => state.cart.cartItems || []);
   const wishlistItems = useSelector((state) => state.wishlist.wishlist || []);
-  const products = useSelector((state) => state.products.list || []);
 
   const [query, setQuery] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const { data: searchResults, isLoading: isSearching } = useSearchProductsQuery(
+    { q: searchQuery },
+    { skip: !searchQuery.trim() }
+  );
 
   const user = useSelector((state) => state.auth.user);
 
@@ -44,16 +48,12 @@ function Header()
     const value = e.target.value;
     setQuery(value);
 
-    if (!value.trim())
-    {
-      setFilteredProducts([]);
-      return;
-    }
+    // Debounce search to avoid too many API calls
+    const timeoutId = setTimeout(() => {
+      setSearchQuery(value);
+    }, 300);
 
-    const results = products.filter((p) =>
-      p.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredProducts(results);
+    return () => clearTimeout(timeoutId);
   };
 
   return (
@@ -97,27 +97,27 @@ function Header()
             <CiSearch className="text-black text-2xl cursor-pointer ml-2" />
 
             {/* Suggestions */}
-            {filteredProducts.length > 0 && (
+            {searchResults && searchResults.data && searchResults.data.length > 0 && (
               <div className="absolute top-12 left-0 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-y-auto">
-                {filteredProducts.map((item) => (
+                {searchResults.data.slice(0, 5).map((item) => (
                   <Link
-                    key={item.id}
-                    to={`/product/${item.id}`}
+                    key={item._id}
+                    to={`/product/${item._id}`}
                     className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
                     onClick={() =>
                     {
                       setQuery("");
-                      setFilteredProducts([]);
+                      setSearchQuery("");
                     }}
                   >
                     <img
-                      src={item.image}
+                      src={item.images[0]?.url}
                       alt={item.name}
                       className="w-10 h-10 object-cover rounded-md"
                     />
                     <div className="flex-1">
                       <p className="font-medium text-gray-800">{item.name}</p>
-                      <p className="text-sm text-gray-600">${item.price.toFixed(2)}</p>
+                      <p className="text-sm text-gray-600">${item.price}</p>
                       <p className="text-xs text-gray-500 truncate">{item.description}</p>
                     </div>
                   </Link>

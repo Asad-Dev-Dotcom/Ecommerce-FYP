@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { categories } from '../data/dummyData';
+import { useGetAllCategoriesQuery, useCreateCategoryMutation, useUpdateCategoryMutation, useDeleteCategoryMutation } from '../../../redux/apis/categoryApis';
 import CategoryCard from '../components/CategoryCard';
 import CategoryForm from '../components/CategoryForm';
+import { toast } from 'react-toastify';
 
 const Categories = () =>
 {
-  const [categoryList, setCategoryList] = useState(categories);
   const [showForm, setShowForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
+
+  // API hooks
+  const { data: categoriesData, isLoading, refetch } = useGetAllCategoriesQuery();
+  const [createCategory] = useCreateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
+
+  const categories = categoriesData?.data || [];
 
   const handleAddCategory = () =>
   {
@@ -21,37 +29,59 @@ const Categories = () =>
     setShowForm(true);
   };
 
-  const handleDeleteCategory = (categoryId) =>
+  const handleDeleteCategory = async (categoryId) =>
   {
     if (window.confirm('Are you sure you want to delete this category? This action cannot be undone.'))
     {
-      setCategoryList(categoryList.filter(category => category.id !== categoryId));
+      try {
+        await deleteCategory(categoryId);
+        toast.success('Category deleted successfully');
+        refetch();
+      } catch (error) {
+        toast.error('Failed to delete category');
+      }
     }
   };
 
-  const handleSaveCategory = (categoryData) =>
+  const handleSaveCategory = async (formData) =>
   {
-    if (editingCategory)
-    {
-      // Update existing category
-      setCategoryList(categoryList.map(category =>
-        category.id === editingCategory.id
-          ? { ...category, ...categoryData, id: category.id }
-          : category
-      ));
-    } else
-    {
-      // Add new category
-      const newCategory = {
-        ...categoryData,
-        id: Math.max(...categoryList.map(c => c.id)) + 1,
-        createdAt: new Date().toISOString().split('T')[0]
-      };
-      setCategoryList([...categoryList, newCategory]);
+    try {
+      if (editingCategory)
+      {
+        await updateCategory({ id: editingCategory._id, formData });
+        toast.success('Category updated successfully');
+      } else
+      {
+        await createCategory(formData);
+        toast.success('Category created successfully');
+      }
+      setShowForm(false);
+      setEditingCategory(null);
+      refetch();
+    } catch (error) {
+      toast.error(error?.data?.message || 'Failed to save category');
     }
-    setShowForm(false);
-    setEditingCategory(null);
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-48 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -69,28 +99,33 @@ const Categories = () =>
       <div className="grid rid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-200">
           <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Total Categories</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{categoryList.length}</p>
+          <p className="text-3xl font-bold text-gray-900 m-0">{categories.length}</p>
         </div>
         <div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Total Products</h3>
-          <p className="text-3xl font-bold text-gray-900 m-0">{categoryList.reduce((sum, cat) => sum + cat.productCount, 0)}</p>
+          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Active Categories</h3>
+          <p className="text-3xl font-bold text-gray-900 m-0">{categories.length}</p>
         </div>
         <div className="bg-white rounded-xl p-6 text-center shadow-sm border border-gray-200">
-          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Avg Products/Category</h3>
+          <h3 className="text-sm font-medium text-gray-500 uppercase mb-2">Categories This Month</h3>
           <p className="text-3xl font-bold text-gray-900 m-0">
-            {categoryList.length > 0
-              ? Math.round(categoryList.reduce((sum, cat) => sum + cat.productCount, 0) / categoryList.length)
-              : 0
-            }
+            {categories.filter(cat => {
+              const createdAt = new Date(cat.createdAt);
+              const now = new Date();
+              return createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear();
+            }).length}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {categoryList.map(category => (
+        {categories.map(category => (
           <CategoryCard
-            key={category.id}
-            category={category}
+            key={category._id}
+            category={{
+              ...category,
+              id: category._id,
+              image: category.image?.url,
+            }}
             onEdit={handleEditCategory}
             onDelete={handleDeleteCategory}
           />
@@ -99,7 +134,10 @@ const Categories = () =>
 
       {showForm && (
         <CategoryForm
-          category={editingCategory}
+          category={editingCategory ? {
+            ...editingCategory,
+            image: editingCategory.image?.url,
+          } : null}
           onSave={handleSaveCategory}
           onCancel={() =>
           {

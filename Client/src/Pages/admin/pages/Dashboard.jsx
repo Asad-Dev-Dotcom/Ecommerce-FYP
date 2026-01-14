@@ -1,27 +1,53 @@
 import React, { useState } from 'react';
-import { salesData, orders } from '../data/dummyData';
+import { useGetDashboardStatsQuery, useGetSalesAnalyticsQuery } from '../../../redux/apis/dashboardApis';
 import StatCard from '../components/StatCard';
 import Chart from '../components/Chart';
 import RecentOrders from '../components/RecentOrders';
 import LowStockAlert from '../components/LowStockAlert';
 
 const Dashboard = () => {
-  const [timeFilter, setTimeFilter] = useState('daily');
+  const [timeFilter, setTimeFilter] = useState('monthly');
+
+  // API calls
+  const { data: dashboardStats, isLoading: statsLoading, error: statsError } = useGetDashboardStatsQuery();
+  const { data: salesAnalytics, isLoading: analyticsLoading } = useGetSalesAnalyticsQuery({
+    period: timeFilter
+  });
 
   const getFilteredData = () => {
-    switch (timeFilter) {
-      case 'daily':
-        return salesData.dailySales;
-      case 'weekly':
-        return salesData.weeklySales;
-      case 'monthly':
-        return salesData.monthlySales;
-      case 'yearly':
-        return salesData.yearlySales;
-      default:
-        return salesData.dailySales;
-    }
+    if (!salesAnalytics || !salesAnalytics.data) return [];
+    return salesAnalytics.data.map(item => ({
+      date: item._id.month ? `${item._id.year}-${item._id.month}` : item.date,
+      revenue: item.revenue,
+      orders: item.orders,
+      averageOrderValue: item.averageOrderValue,
+    }));
   };
+
+  if (statsLoading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-24 bg-gray-200 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (statsError) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center text-red-500">
+          Failed to load dashboard data. Please try again.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -44,28 +70,28 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <StatCard
           title="Total Sales"
-          value={`$${salesData.totalSales.toLocaleString()}`}
+          value={dashboardStats?.data?.totalSales || 0}
           icon="💰"
           change="+12.5%"
           changeType="positive"
         />
         <StatCard
           title="Total Revenue"
-          value={`$${salesData.totalRevenue.toLocaleString()}`}
+          value={`$${dashboardStats?.data?.totalRevenue?.toLocaleString() || 0}`}
           icon="📈"
           change="+8.2%"
           changeType="positive"
         />
         <StatCard
           title="Total Orders"
-          value={salesData.totalOrders}
+          value={dashboardStats?.data?.totalOrders || 0}
           icon="🛒"
           change="+15.3%"
           changeType="positive"
         />
         <StatCard
           title="Average Order Value"
-          value={`$${salesData.averageOrderValue.toFixed(2)}`}
+          value={`$${dashboardStats?.data?.averageOrderValue?.toFixed(2) || 0}`}
           icon="📊"
           change="+5.1%"
           changeType="positive"
@@ -86,7 +112,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <RecentOrders orders={orders.slice(0, 5)} />
+          <RecentOrders orders={dashboardStats?.data?.recentOrders || []} />
         </div>
 
         <div className="lg:col-span-1">

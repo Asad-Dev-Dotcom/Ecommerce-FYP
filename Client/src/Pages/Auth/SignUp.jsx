@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { LuEye } from "react-icons/lu";
 import { IoEyeOffOutline } from "react-icons/io5";
@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Signup()
 {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -60,6 +61,7 @@ function Signup()
       {
         const response = await signup(formData).unwrap();
         toast.success("Signup successful! 🎉");
+        navigate("/login");
         console.log("Response:", response);
       } catch (error)
       {
