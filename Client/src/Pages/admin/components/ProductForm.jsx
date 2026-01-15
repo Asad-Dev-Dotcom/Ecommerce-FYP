@@ -54,7 +54,6 @@ const ProductForm = ({ product, onSave, onCancel }) =>
     setFormData(prev => ({
       ...prev,
       images: prev.images.filter((_, i) => i !== index)
-      images: prev.images.filter((_, i) => i !== index)
     }));
   };
 
