@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const CategoryForm = ({ category, onSave, onCancel }) => {
+const CategoryForm = ({ category, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -8,8 +9,10 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     existingImage: null
   });
 
-  useEffect(() => {
-    if (category) {
+  useEffect(() =>
+  {
+    if (category)
+    {
       setFormData({
         title: category.title || '',
         description: category.description || '',
@@ -19,7 +22,8 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     }
   }, [category]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -52,7 +56,6 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
     onSave(formDataToSend);
   };
 
-  // Tailwind input classes: default gray, hover red, focus thick red
   const inputClass = `
     w-full p-2 border border-gray-400 text-black rounded
     outline-none
@@ -65,7 +68,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
       {/* Blur overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onCancel} 
+        onClick={onCancel}
       ></div>
 
       {/* Modal */}
@@ -137,6 +140,7 @@ const CategoryForm = ({ category, onSave, onCancel }) => {
               {formData.existingImage ? 'Replace Image' : 'Category Image *'}
             </label>
             <input
+              type="file"
               type="file"
               id="image"
               name="image"

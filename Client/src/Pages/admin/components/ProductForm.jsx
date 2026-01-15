@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { categories } from '../data/dummyData';
 
-const ProductForm = ({ product, onSave, onCancel }) => {
+const ProductForm = ({ product, onSave, onCancel }) =>
+{
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -14,8 +15,10 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     existingImages: []
   });
 
-  useEffect(() => {
-    if (product) {
+  useEffect(() =>
+  {
+    if (product)
+    {
       setFormData({
         name: product.name || '',
         description: product.description || '',
@@ -30,7 +33,8 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     }
   }, [product]);
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
+  {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -49,6 +53,7 @@ const ProductForm = ({ product, onSave, onCancel }) => {
   const removeImage = (index) => {
     setFormData(prev => ({
       ...prev,
+      images: prev.images.filter((_, i) => i !== index)
       images: prev.images.filter((_, i) => i !== index)
     }));
   };
@@ -91,23 +96,24 @@ const ProductForm = ({ product, onSave, onCancel }) => {
     onSave(formDataToSend);
   };
 
-  // Tailwind input classes with hover/focus outline effect
-const inputClass = `
-  w-full p-2 border border-gray-400 text-black rounded
-  outline-none
-  hover:border-red-500
-  focus:border-red-600 focus:ring-2 focus:ring-red-500
-`;
+  const inputClass = `
+    w-full p-2 border border-gray-400 text-black rounded
+    outline-none
+    hover:border-red-500
+    focus:border-red-600 focus:ring-2 focus:ring-red-500
+  `;
 
   return (
     <div className="fixed inset-0 bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+
+        {/* HEADER */}
         <div className="flex justify-between items-center p-6 border-b border-gray-200">
           <h2 className="text-2xl font-semibold text-gray-900 m-0">
             {product ? 'Edit Product' : 'Add New Product'}
           </h2>
           <button
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none focus:outline-none"
+            className="text-gray-400 hover:text-gray-600 text-2xl"
             onClick={onCancel}
           >
             ×
@@ -131,18 +137,17 @@ const inputClass = `
             />
           </div>
 
-          {/* Description */}
+          {/* DESCRIPTION */}
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Description *
             </label>
             <textarea
-              id="description"
               name="description"
+              rows="4"
               value={formData.description}
               onChange={handleChange}
-              rows="4"
-              className={inputClass + " resize-vertical"}
+              className={inputClass}
               required
             />
           </div>
@@ -223,18 +228,16 @@ const inputClass = `
             </select>
           </div>
 
-          {/* Stock */}
+          {/* STOCK */}
           <div>
-            <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium mb-2">
               Stock Quantity *
             </label>
             <input
               type="number"
-              id="stock"
               name="stock"
               value={formData.stock}
               onChange={handleChange}
-              min="0"
               className={inputClass}
               required
             />
@@ -310,22 +313,23 @@ const inputClass = `
             )}
           </div>
 
-          {/* Buttons */}
-          <div className="flex justify-end gap-3 pt-5 border-t border-gray-200">
+          {/* BUTTONS (UNCHANGED) */}
+          <div className="flex justify-end gap-3 pt-5 border-t">
             <button
               type="button"
-              className="bg-black text-white px-4 py-2 rounded-lg font-medium hover:bg-gray-800"
               onClick={onCancel}
+              className="bg-black text-white px-4 py-2 rounded"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700"
+              className="bg-red-600 text-white px-4 py-2 rounded"
             >
               {product ? 'Update Product' : 'Add Product'}
             </button>
           </div>
+
         </form>
       </div>
     </div>
