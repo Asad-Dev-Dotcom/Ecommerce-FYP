@@ -34,9 +34,9 @@ const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) =>
 
         <div className="flex-shrink-0">
           <select
-            value={order.status}
+            value={order?.status}
             onChange={handleStatusChange}
-            className={`px-3 py-1 rounded-full text-white text-xs font-semibold border-none cursor-pointer ${getStatusColor(order.status)}`}
+            className={`px-3 py-1 rounded-full text-white text-xs font-semibold border-none cursor-pointer ${getStatusColor(order?.status)}`}
           >
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
@@ -48,24 +48,24 @@ const OrderCard = ({ order, customerName, onStatusChange, onViewDetails }) =>
 
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-4">
-          <span className="text-sm text-gray-500">{order.orderDate}</span>
-          <span className="text-sm text-gray-500">{order.items.length} items</span>
+          <span className="text-sm text-gray-500">{order?.orderDate}</span>
+          <span className="text-sm text-gray-500">{order?.items?.length} items</span>
         </div>
 
         <div className="text-right">
-          <span className="text-lg font-semibold text-gray-800">${order.total.toFixed(2)}</span>
+          <span className="text-lg font-semibold text-gray-800">${order?.total?.toFixed(2) || order?.totalAmount?.toFixed(2)}</span>
         </div>
       </div>
 
       <div className="mb-4">
-        {order.items.slice(0, 2).map((item, index) => (
+        {order?.items?.slice(0, 2).map((item, index) => (
           <div key={index} className="flex justify-between py-1">
-            <span className="text-sm text-gray-700">{item.productName}</span>
-            <span className="text-sm text-gray-500">×{item.quantity}</span>
+            <span className="text-sm text-gray-700">{item?.productName}</span>
+            <span className="text-sm text-gray-500">×{item?.quantity}</span>
           </div>
         ))}
-        {order.items.length > 2 && (
-          <span className="text-sm text-gray-400 italic">+{order.items.length - 2} more</span>
+        {order?.items?.length > 2 && (
+          <span className="text-sm text-gray-400 italic">+{order?.items?.length - 2} more</span>
         )}
       </div>
 

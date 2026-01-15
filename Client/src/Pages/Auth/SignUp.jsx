@@ -5,12 +5,13 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { useSignupMutation } from "../../redux/apis/authApis";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { userExist } from "../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 function Signup()
 {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -60,9 +61,11 @@ function Signup()
       try
       {
         const response = await signup(formData).unwrap();
+        if (response?.user || response?.data)
+        {
+          dispatch(userExist(response?.user || response?.data));
+        }
         toast.success("Signup successful! 🎉");
-        navigate("/login");
-        console.log("Response:", response);
       } catch (error)
       {
         toast.error(error?.data?.message || "Signup failed!");

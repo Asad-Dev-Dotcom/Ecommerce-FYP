@@ -55,7 +55,7 @@ const FlashSales = () =>
   }, []);
 
   // Transform API data to match ProductCard format
-  const transformedProducts = products?.map(product => ({
+  const transformedProducts = products?.data?.map(product => ({
     id: product._id,
     image: product.images[0]?.url,
     title: product.name,

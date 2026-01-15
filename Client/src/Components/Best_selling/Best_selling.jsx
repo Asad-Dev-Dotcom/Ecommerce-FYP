@@ -14,7 +14,7 @@ const BestSelling = () => {
 
   // Transform API data to match ProductCard format
   // Handle case where API returns undefined or empty data
-  const transformedProducts = (Array.isArray(products) ? products : []).map(product => ({
+  const transformedProducts = (Array.isArray(products?.data) ? products.data : []).map(product => ({
     id: product._id,
     image: product.images[0]?.url,
     title: product.name,

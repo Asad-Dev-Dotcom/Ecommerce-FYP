@@ -8,12 +8,18 @@ import { SlLogout } from "react-icons/sl";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useSearchProductsQuery } from "../redux/apis/homeApis";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useLogoutMutation } from "../redux/apis/authApis";
+import { userNotExist } from "../redux/slices/authSlice";
 
 function Header()
 {
   const location = useLocation();
   const isUserNavigated = location.key !== "default";
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutApi] = useLogoutMutation();
   const cartItems = useSelector((state) => state.cart.cartItems || []);
   const wishlistItems = useSelector((state) => state.wishlist.wishlist || []);
 
@@ -54,6 +60,14 @@ function Header()
     }, 300);
 
     return () => clearTimeout(timeoutId);
+  };
+
+  const handleLogout = () =>
+  {
+    logoutApi().then(() => {
+      dispatch(userNotExist());
+    });
+    navigate("/");
   };
 
   return (
@@ -126,51 +140,55 @@ function Header()
             )}
           </div>
 
-          {/* Wishlist & Cart */}
-          <Link to="/wishlist" className="relative hover:text-red-500 transition text-3xl">
-            <CiHeart />
-            {wishlistItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white rounded-full w-4 h-4 flex items-center justify-center">
-                {wishlistItems.length}
-              </span>
-            )}
-          </Link>
+         {user && ( 
+           <>
+           {/* Wishlist & Cart */}
+           <Link to="/wishlist" className="relative hover:text-red-500 transition text-3xl">
+           <CiHeart />
+           {wishlistItems.length > 0 && (
+             <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white rounded-full w-4 h-4 flex items-center justify-center">
+               {wishlistItems.length}
+             </span>
+           )}
+         </Link>
 
-          <Link to="/cart" className="relative hover:text-red-500 transition text-3xl">
-            <IoCartOutline />
-            {cartItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white rounded-full w-4 h-4 flex items-center justify-center">
-                {cartItems.length}
-              </span>
-            )}
-          </Link>
+         <Link to="/cart" className="relative hover:text-red-500 transition text-3xl">
+           <IoCartOutline />
+           {cartItems.length > 0 && (
+             <span className="absolute -top-2 -right-2 bg-red-600 text-xs text-white rounded-full w-4 h-4 flex items-center justify-center">
+               {cartItems.length}
+             </span>
+           )}
+         </Link>
 
-          {/* Profile Dropdown */}
-          <div className="relative group hidden md:block">
-            <button className="hover:text-red-500 transition text-3xl focus:outline-none">
-              <CiUser />
-            </button>
-            <div className="opacity-0 invisible group-hover:visible group-hover:opacity-100 
-              absolute right-0 mt-2 w-48 bg-black/55 backdrop-blur-md rounded-md transition-all duration-300 z-50">
-              {user?.role === "admin" ? (<Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <FaRegUser className="text-lg" /> Admin Dashboard
-              </Link>) : <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <FaRegUser className="text-lg" /> Manage my account
-              </Link>}
-              <Link to="/orders" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <FiShoppingBag className="text-lg" /> My orders
-              </Link>
-              <Link to="/cancellations" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <MdOutlineCancel className="text-lg" /> My cancellations
-              </Link>
-              <Link to="/reviews" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <FaRegStar className="text-lg" /> My reviews
-              </Link>
-              <Link to="/logout" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
-                <SlLogout className="text-lg" /> Logout
-              </Link>
-            </div>
-          </div>
+         {/* Profile Dropdown */}
+         <div className="relative group hidden md:block">
+           <button className="hover:text-red-500 transition text-3xl focus:outline-none">
+             <CiUser />
+           </button>
+           <div className="opacity-0 invisible group-hover:visible group-hover:opacity-100 
+             absolute right-0 mt-2 w-48 bg-black/55 backdrop-blur-md rounded-md transition-all duration-300 z-50">
+             {user?.role === "admin" ? (<Link to="/admin" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <FaRegUser className="text-lg" /> Admin Dashboard
+             </Link>) : <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <FaRegUser className="text-lg" /> Manage my account
+             </Link>}
+             <Link to="/orders" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <FiShoppingBag className="text-lg" /> My orders
+             </Link>
+             <Link to="/cancellations" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <MdOutlineCancel className="text-lg" /> My cancellations
+             </Link>
+             <Link to="/reviews" className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <FaRegStar className="text-lg" /> My reviews
+             </Link>
+             <button onClick={handleLogout} className="flex items-center gap-2 px-4 py-2 text-white text-sm hover:bg-red-500 hover:rounded-md transition">
+               <SlLogout className="text-lg" /> Logout
+             </button>
+           </div>
+         </div>
+         </>
+         )}
         </div>
       </div>
     </header>

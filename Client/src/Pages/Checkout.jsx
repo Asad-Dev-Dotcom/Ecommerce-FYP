@@ -1,24 +1,32 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, Link } from "react-router-dom";
+import { useCreateOrderMutation } from "../redux/apis/orderApis";
 
 const CheckoutPage = () => {
   const cartItems = useSelector((state) => state.cart.cartItems || []); // ✅ cart se data aa rha hai
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
+  const [createOrder, { isLoading: isCreatingOrder }] = useCreateOrderMutation();
+
+  const user = useSelector((state) => state.auth.user);
+
   const [formData, setFormData] = useState({
-    fullName: "",
-    companyName: "",
-    streetAddress: "",
-    apartment: "",
-    townCity: "",
-    phoneNumber: "",
-    emailAddress: "",
+    shippingAddress: {
+      customer: user?._id || "",
+      street: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      country: "",
+      phoneNumber: "",
+      emailAddress: "",
+    },
     saveInfo: false,
   });
 
-  const [paymentMethod, setPaymentMethod] = useState("bank");
+  const [paymentMethod, setPaymentMethod] = useState("online");
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
 
@@ -35,10 +43,22 @@ const CheckoutPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+
+    if (name.startsWith('shippingAddress.')) {
+      const field = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        shippingAddress: {
+          ...prev.shippingAddress,
+          [field]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+      }));
+    }
   };
 
   const handleApplyCoupon = () => {
@@ -51,7 +71,7 @@ const CheckoutPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (cartItems.length === 0) {
@@ -59,12 +79,12 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (!isValidEmail(formData.emailAddress)) {
+    if (!isValidEmail(formData.shippingAddress.emailAddress)) {
       alert("Please enter a valid email address.");
       return;
     }
 
-    if (!isValidPhone(formData.phoneNumber)) {
+    if (!isValidPhone(formData.shippingAddress.phoneNumber)) {
       alert("Please enter a valid phone number.");
       return;
     }
@@ -76,7 +96,21 @@ const CheckoutPage = () => {
       total,
     });
 
-    alert("Order placed successfully!");
+    try {
+      const response = await createOrder({
+        customer: user?._id || "",
+        shippingAddress: formData.shippingAddress,
+        items: cartItems,
+        total,
+        paymentMethod,
+      }).unwrap();
+      if (response.success && response.sessionUrl && paymentMethod === "online") {
+        window.location.href = response.sessionUrl;
+      }
+      console.log("Order placed successfully:", response);
+    } catch (error) {
+      console.error("Error placing order:", error);
+    }
   };
 
   return (
@@ -125,23 +159,25 @@ const CheckoutPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {[
                   { label: "Full Name*", name: "fullName", required: true },
-                  { label: "Company Name", name: "companyName" },
                   {
                     label: "Street Address*",
-                    name: "streetAddress",
+                    name: "shippingAddress.street",
                     required: true,
                   },
-                  { label: "Apartment, floor, etc.", name: "apartment" },
-                  { label: "Town/City*", name: "townCity", required: true },
+                  { label: "Apartment, floor, etc.", name: "shippingAddress.apartment" },
+                  { label: "City*", name: "shippingAddress.city", required: true },
+                  { label: "State*", name: "shippingAddress.state", required: true },
+                  { label: "ZIP Code*", name: "shippingAddress.zipCode", required: true },
+                  { label: "Country*", name: "shippingAddress.country", required: true },
                   {
                     label: "Phone Number*",
-                    name: "phoneNumber",
+                    name: "shippingAddress.phoneNumber",
                     required: true,
                     type: "tel",
                   },
                   {
                     label: "Email Address*",
-                    name: "emailAddress",
+                    name: "shippingAddress.emailAddress",
                     required: true,
                     type: "email",
                   },
@@ -158,7 +194,7 @@ const CheckoutPage = () => {
                       id={name}
                       type={type}
                       name={name}
-                      value={formData[name]}
+                      value={name.startsWith('shippingAddress.') ? formData.shippingAddress[name.split('.')[1]] : formData[name]}
                       onChange={handleInputChange}
                       required={required}
                       className="w-lg px-4 py-3 border-none rounded-lg bg-gray-200 
@@ -244,7 +280,7 @@ const CheckoutPage = () => {
               <div className="mt-8 space-y-4">
                 {[
                   {
-                    id: "bank",
+                    id: "online",
                     label: (
                       <span className="flex items-center space-x-2">
                         <span>Bank</span>
@@ -279,7 +315,7 @@ const CheckoutPage = () => {
               </div>
 
               {/* ✅ Coupon Code */}
-              <div className="mt-8 flex space-x-3">
+              {/* <div className="mt-8 flex space-x-3">
                 <input
                   type="text"
                   placeholder="Coupon Code"
@@ -294,7 +330,7 @@ const CheckoutPage = () => {
                 >
                   Apply Coupon
                 </button>
-              </div>
+              </div> */}
 
               {/* ✅ Place Order */}
               <button

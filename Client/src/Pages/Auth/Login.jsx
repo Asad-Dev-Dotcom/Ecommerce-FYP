@@ -5,12 +5,14 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { useLoginMutation } from "../../redux/apis/authApis";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { userExist } from "../../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 function Login()
 {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -67,6 +69,10 @@ function Login()
       try
       {
         const response = await login(formData).unwrap();
+        if (response?.user || response?.data)
+        {
+          dispatch(userExist(response?.user || response?.data));
+        }
         toast.success(response.message || "Login Successful!");
         navigate("/");
       } catch (error)

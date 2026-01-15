@@ -15,17 +15,9 @@ const Home = () =>
   return (
     
     <div className="flex flex-col items-center w-full ">
-      {/* Top Row: Sidebar + Slider */}
-      <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-2 w-full ">
-        {/* Sidebar */}
-        <div className="sm:w-[22%] w-full">
-          <Sidebar />
-        </div>
-
-        {/* Slider */}
-        <div className="sm:w-[63%] w-full mt-9">
-          <Slider />
-        </div>
+      {/* Slider: Full width */}
+      <div className="sm:w-[85%] mt-9">
+        <Slider />
       </div>
 
       {/* FlashSlider: Full width below */}

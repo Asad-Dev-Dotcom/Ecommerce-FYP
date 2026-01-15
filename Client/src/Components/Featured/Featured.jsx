@@ -37,7 +37,7 @@ const Featured = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Left Large Box - Dynamic */}
-                    {featuredProducts && featuredProducts[0] ? (
+                    {featuredProducts?.data && featuredProducts.data[0] ? (
                         <div className="relative overflow-hidden min-h-[550px] flex items-end bg-black">
                             <img
                                 src={featuredProducts[0].images[0]?.url || "public/PS5.png"}

@@ -1,24 +1,39 @@
 import React, { useState } from "react";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FaTruckFast, FaArrowsRotate } from "react-icons/fa6";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { addToCart } from "../Features/Cart/CartSlice";
 import ProductCard from "../Components/ProductCard/Product_card";
+import { useGetProductQuery } from "../redux/apis/productApis";
 
 const ProductPage = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
   const [quantity, setQuantity] = useState(2);
   const [selectedImage, setSelectedImage] = useState(0);
   const [liked, setLiked] = useState(false);
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { id } = useParams();
+  const { data: productData, isLoading } = useGetProductQuery(id);
+  const product = productData?.data;
+
+  console.log(product);
+ 
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (!product) {
+    return <div>Product not found</div>;
+  }
 
   const colors = ["#ffffff", "#ff6b6b"];
   const sizes = ["XS", "S", "M", "L", "XL"];
 
-  const product = {
+  const dummyProduct = {
     id: 101,
     name: "Havic HV G-92 Gamepad",
     price: 192,
@@ -77,7 +92,7 @@ const ProductPage = () => {
         <span className="mx-2">/</span>
         <span>Gaming</span>
         <span className="mx-2">/</span>
-        <span className="text-black">{product.name}</span>
+        <span className="text-black">{product?.name}</span>
       </div>
 
       {/* Product Grid */}
@@ -85,7 +100,7 @@ const ProductPage = () => {
         {/* Thumbnails */}
         <div className="lg:col-span-2">
           <div className="flex flex-row lg:flex-col gap-5">
-            {product.images.slice(1).map((img, i) => (
+            {product?.images?.slice(1).map((img, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedImage(i + 1)}
@@ -97,7 +112,7 @@ const ProductPage = () => {
                   }`}
               >
                 <img
-                  src={img}
+                  src={img?.url}
                   alt={`Thumb ${i + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -110,7 +125,7 @@ const ProductPage = () => {
         <div className="lg:col-span-6">
           <div className="bg-gray-100 rounded-lg aspect-square flex items-center justify-center">
             <img
-              src={product.images[selectedImage]}
+              src={product?.images[selectedImage]?.url}
               alt="Main Product"
               className="w-full h-full object-contain p-8"
             />
@@ -119,7 +134,7 @@ const ProductPage = () => {
 
         {/* Details */}
         <div className="lg:col-span-4">
-          <h1 className="text-2xl font-semibold mb-2">{product.name}</h1>
+          <h1 className="text-2xl font-semibold mb-2">{product?.name}</h1>
 
           {/* Rating */}
           <div className="flex items-center gap-4 mb-4">
@@ -127,23 +142,23 @@ const ProductPage = () => {
               {Array.from({ length: 5 }, (_, i) => (
                 <span
                   key={i}
-                  className={i < Math.round(product.rating) ? "text-yellow-500" : "text-gray-300"}
+                  className={i < Math.round(product?.rating) ? "text-yellow-500" : "text-gray-300"}
                 >
                   ★
                 </span>
               ))}
             </div>
             <span className="text-sm text-gray-500">
-              ({product.reviews} Reviews)
+              ({product?.reviews} Reviews)
             </span>
             <span className="text-sm text-green-500">In Stock</span>
           </div>
 
           {/* Price */}
-          <div className="text-2xl font-semibold mb-4">${product.price}.00</div>
+          <div className="text-2xl font-semibold mb-4">${product?.price}.00</div>
 
           {/* Description */}
-          <p className="text-sm text-gray-600 mb-6">{product.description}</p>
+          <p className="text-sm text-gray-600 mb-6">{product?.description}</p>
 
           {/* Colors */}
           <div className="mb-6">
@@ -216,10 +231,10 @@ const ProductPage = () => {
               onClick={() =>
                 dispatch(
                   addToCart({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.images[0],
+                    id: product?._id,
+                    name: product?.name,
+                    price: product?.price,
+                    image: product?.images[0]?.url,
                     quantity,
                   })
                 )
@@ -269,7 +284,7 @@ const ProductPage = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((p) => (
+          {product?.relatedProducts?.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
         </div>

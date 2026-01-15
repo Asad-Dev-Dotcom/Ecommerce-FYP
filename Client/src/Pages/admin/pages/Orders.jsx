@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // API hooks
   const { data: ordersData, isLoading, refetch } = useGetAllOrdersQuery({

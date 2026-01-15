@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  wishlist: [],
+  wishlistItems: [],
+  loading: false,
+  error: null,
 };
 
 const wishlistSlice = createSlice({
@@ -10,16 +12,47 @@ const wishlistSlice = createSlice({
   reducers: {
     addToWishlist: (state, action) => {
       const item = action.payload;
-      const exist = state.wishlist.find((p) => p.id === item.id);
-      if (!exist) {
-        state.wishlist.push(item);
+      const existingItem = state.wishlistItems.find(
+        (wishlistItem) => wishlistItem.product._id === item.product._id
+      );
+
+      if (!existingItem) {
+        state.wishlistItems.push(item);
       }
     },
+
     removeFromWishlist: (state, action) => {
-      state.wishlist = state.wishlist.filter((p) => p.id !== action.payload);
+      const productId = action.payload;
+      state.wishlistItems = state.wishlistItems.filter(
+        (item) => item.product._id !== productId
+      );
+    },
+
+    setWishlistItems: (state, action) => {
+      state.wishlistItems = action.payload;
+    },
+
+    clearWishlist: (state) => {
+      state.wishlistItems = [];
+    },
+
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+
+    setError: (state, action) => {
+      state.error = action.payload;
     },
   },
 });
 
-export const { addToWishlist, removeFromWishlist } = wishlistSlice.actions;
+export const {
+  addToWishlist,
+  removeFromWishlist,
+  setWishlistItems,
+  clearWishlist,
+  setLoading,
+  setError,
+} = wishlistSlice.actions;
+
 export default wishlistSlice.reducer;

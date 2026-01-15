@@ -16,6 +16,7 @@ import dashboardApis from "./apis/dashboardApis";
 import productApis from "./apis/productApis";
 import categoryApis from "./apis/categoryApis";
 import orderApis from "./apis/orderApis";
+import wishlistApis from "./apis/wishlistApis";
 
 // Slices
 import authSlice from "./slices/authSlice";
@@ -46,6 +47,7 @@ export const store = configureStore({
     [productApis.reducerPath]: productApis.reducer,
     [categoryApis.reducerPath]: categoryApis.reducer,
     [orderApis.reducerPath]: orderApis.reducer,
+    [wishlistApis.reducerPath]: wishlistApis.reducer,
 
     // 🧩 App slices
     [authSlice.name]: authSlice.reducer,
@@ -73,7 +75,8 @@ export const store = configureStore({
       .concat(dashboardApis.middleware)
       .concat(productApis.middleware)
       .concat(categoryApis.middleware)
-      .concat(orderApis.middleware),
+      .concat(orderApis.middleware)
+      .concat(wishlistApis.middleware),
 });
 
 
